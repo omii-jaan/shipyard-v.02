@@ -1,0 +1,118 @@
+import { ArrowRight, Zap, Terminal, Compass } from "lucide-react";
+
+const CTASection = () => {
+  return (
+    <section className="py-28 px-6 relative overflow-hidden">
+      {/* Glow dividers */}
+      <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+
+      <div className="container max-w-5xl mx-auto relative z-10">
+        
+        {/* Core Header */}
+        <div className="text-center mb-16 max-w-2xl mx-auto">
+          <h2 className="font-display font-black text-3xl md:text-5xl text-white mb-4 leading-tight">
+            Ready to change how <br />
+            <span className="gradient-text-cyan text-glow-cyan">software is built & hired?</span>
+          </h2>
+          <p className="text-muted-foreground text-sm">
+            Whether you are a developer shipping agentic architectures or a founder building the future, we have a port docked for you.
+          </p>
+        </div>
+
+        {/* Dual Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          {/* Card 1: For Builders */}
+          <div className="relative rounded-3xl p-8 md:p-10 border border-primary/20 bg-gradient-to-br from-primary/5 via-card/80 to-card/40 group hover:shadow-[0_0_30px_rgba(183,100,50,0.1)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+            {/* Visual background icon decoration */}
+            <Terminal className="absolute -right-8 -bottom-8 w-44 h-44 text-primary/5 pointer-events-none group-hover:scale-110 transition-transform duration-500" />
+            
+            <div className="relative z-10 flex flex-col justify-between h-full">
+              <div>
+                <span className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-bold text-primary uppercase tracking-wider mb-6 inline-block">
+                  For AI Builders
+                </span>
+                
+                <h3 className="font-display font-black text-2xl md:text-3xl text-white mb-4">
+                  Dock your builds. <br />
+                  <span className="gradient-text-cyan text-glow-cyan">Earn 100% of your vibe.</span>
+                </h3>
+                
+                <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
+                  Join 2,400+ builders showcasing live code, integrations, and active agents. Get discovered by tech-forward founders looking for speed and quality.
+                </p>
+
+                <ul className="space-y-3 mb-8 text-xs text-white/80 font-mono">
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    No resumes, no cover letters, only live URLs
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    Automatic semantic indexing of code repos
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    Keep 100% of contract payments (0% commission)
+                  </li>
+                </ul>
+              </div>
+
+              <button className="group w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-gradient-primary text-primary-foreground font-bold text-xs glow-cyan transition-all hover:brightness-115">
+                Join the Yard as Builder
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </div>
+
+          {/* Card 2: For Founders */}
+          <div className="relative rounded-3xl p-8 md:p-10 border border-secondary/20 bg-gradient-to-br from-secondary/5 via-card/80 to-card/40 group hover:shadow-[0_0_30px_rgba(168,85,247,0.1)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+            {/* Visual background icon decoration */}
+            <Compass className="absolute -right-8 -bottom-8 w-44 h-44 text-secondary/5 pointer-events-none group-hover:scale-110 transition-transform duration-500" />
+            
+            <div className="relative z-10 flex flex-col justify-between h-full">
+              <div>
+                <span className="px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 text-[10px] font-bold text-secondary uppercase tracking-wider mb-6 inline-block">
+                  For Founders
+                </span>
+                
+                <h3 className="font-display font-black text-2xl md:text-3xl text-white mb-4">
+                  Match instantly. <br />
+                  <span className="gradient-text-purple text-glow-purple">Hire based on code proof.</span>
+                </h3>
+                
+                <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
+                  Search developers by exact API usages or patterns. Review live telemetry graphs of active repositories instead of looking at portfolios.
+                </p>
+
+                <ul className="space-y-3 mb-8 text-xs text-white/80 font-mono">
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
+                    Query by exact code snippet imports
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
+                    Escrow-protected contract milestone payments
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
+                    Vetted telemetry analytics on all developer docks
+                  </li>
+                </ul>
+              </div>
+
+              <button className="group w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-gradient-secondary text-secondary-foreground font-bold text-xs glow-purple transition-all hover:brightness-115">
+                Search Shipped Projects
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  );
+};
+
+export default CTASection;
