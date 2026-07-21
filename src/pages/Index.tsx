@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import HeroSection from "@/components/HeroSection";
 import MarqueeSection from "@/components/MarqueeSection";
 import FeaturedBuilders from "@/components/FeaturedBuilders";
@@ -13,7 +14,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <main>
-        <HeroSection />
+        <ErrorBoundary><HeroSection /></ErrorBoundary>
         <MarqueeSection />
         <FeaturedBuilders />
         <HowItWorks />

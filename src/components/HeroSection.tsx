@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback, type FormEvent } from "react";
 import heroBg from "@/assets/hero-bg.jpg";
-import { ArrowRight, Sparkles, Users, Rocket, Terminal, RefreshCw, Send, Zap } from "lucide-react";
+import { ArrowRight, Sparkles, Users, Rocket, Terminal, RefreshCw, Send } from "lucide-react";
 import { NumberTicker } from "@/components/magicui/number-ticker";
 import { WordRotate } from "@/components/magicui/word-rotate";
 
@@ -65,13 +65,15 @@ const HeroSection = () => {
   const [state, setState] = useState<"idle" | "running" | "done">("done");
   const inputRef = useRef<HTMLInputElement>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     logEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [visibleLogs]);
 
   const runSimulation = useCallback((prompt: string) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     if (intervalRef.current) clearInterval(intervalRef.current);
     setPromptText(prompt);
     setVisibleLogs([]);
@@ -81,7 +83,7 @@ const HeroSection = () => {
     let idx = 0;
     const simMs = Math.max(600, logs.length * 280);
 
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       intervalRef.current = setInterval(() => {
         if (idx < logs.length) {
           setVisibleLogs((prev) => [...prev, logs[idx]]);
@@ -96,7 +98,10 @@ const HeroSection = () => {
 
   useEffect(() => {
     runSimulation(PRESETS[0].prompt);
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, [runSimulation]);
 
   const handleSubmit = (e: FormEvent) => {
