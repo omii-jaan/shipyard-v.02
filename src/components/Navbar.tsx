@@ -12,7 +12,7 @@ const Navbar = () => {
   const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
-    const sections = ["builders", "projects", "hire", "discover"];
+    const sections = ["builders", "projects", "discover"];
     const observers: IntersectionObserver[] = [];
     sections.forEach((id) => {
       const el = document.getElementById(id);
@@ -90,7 +90,7 @@ const Navbar = () => {
           {[
             { id: "builders", label: "Builders" },
             { id: "projects", label: "Projects" },
-            { id: "hire", label: "Hire" },
+            { id: "", label: "Hire", href: "#discover" },
             { id: "discover", label: "Discover" },
           ].map((link) => (
             <a
@@ -328,7 +328,7 @@ const Navbar = () => {
             {[
               { href: "#builders", label: "Builders" },
               { href: "#projects", label: "Projects" },
-              { href: "#hire", label: "Hire" },
+              { href: "#discover", label: "Hire" },
               { href: "#discover", label: "Discover" },
             ].map((link) => (
               <a
