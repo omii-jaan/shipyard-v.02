@@ -4,6 +4,7 @@ import heroBg from "@/assets/hero-bg.jpg";
 import { ArrowRight, Sparkles, Users, Rocket, Terminal, RefreshCw, Send } from "lucide-react";
 import { NumberTicker } from "@/components/magicui/number-ticker";
 import { WordRotate } from "@/components/magicui/word-rotate";
+import { toast } from "@/hooks/use-toast";
 
 const LOG_REPLIES: Record<string, string[]> = {
   default: [
@@ -87,11 +88,14 @@ const HeroSection = () => {
     let idx = 0;
     const simMs = Math.max(600, logs.length * 280);
 
+    toast({ title: "Simulation started", description: `Building: ${prompt.slice(0, 60)}${prompt.length > 60 ? "..." : ""}`, duration: 3000 });
+
     timeoutRef.current = setTimeout(() => {
       intervalRef.current = setInterval(() => {
         if (!logs || idx >= logs.length) {
           if (intervalRef.current) clearInterval(intervalRef.current);
           setState("done");
+          toast({ title: "Build complete", description: "Project scaffold generated successfully", duration: 4000 });
           return;
         }
         const line = logs[idx];

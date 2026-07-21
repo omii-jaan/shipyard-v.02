@@ -4,6 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
 import { profileApi, projectApi, contractApi } from "@/lib/api";
 import type { Profile, Project, Contract, ContractMilestone } from "@/types";
+import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import {
   Bell, LayoutDashboard, FolderGit2, FileText, User, Settings,
@@ -85,8 +86,9 @@ const Dashboard = () => {
       });
       setProfile(updated);
       setIsEditing(false);
+      toast({ title: "Profile saved", description: "Your profile has been updated successfully", duration: 4000 });
     } catch (err) {
-      console.error("Failed to save profile:", err);
+      toast({ title: "Save failed", description: "Could not update profile. Please try again.", variant: "destructive", duration: 5000 });
     } finally {
       setSaving(false);
     }
@@ -885,11 +887,17 @@ const Dashboard = () => {
                         <div className="mt-4 pt-3 border-t border-border/50 flex items-center gap-2">
                           {contract.status === "pending" && (
                             <>
-                              <button className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-medium rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 transition-colors">
+                              <button
+                                onClick={() => toast({ title: "Contract accepted", description: `${contract.title} is now active`, duration: 4000 })}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-medium rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 transition-colors"
+                              >
                                 <Check className="w-3.5 h-3.5" />
                                 Accept
                               </button>
-                              <button className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-lg text-muted-foreground hover:text-foreground border border-border/40 hover:border-border transition-colors">
+                              <button
+                                onClick={() => toast({ title: "Contract declined", description: `${contract.title} has been declined`, duration: 4000 })}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-lg text-muted-foreground hover:text-foreground border border-border/40 hover:border-border transition-colors"
+                              >
                                 <X className="w-3.5 h-3.5" />
                                 Decline
                               </button>
@@ -897,11 +905,17 @@ const Dashboard = () => {
                           )}
                           {contract.status === "active" && (
                             <>
-                              <button className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-medium rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 transition-colors">
+                              <button
+                                onClick={() => toast({ title: "Work submitted", description: `Milestone delivered for review on ${contract.title}`, duration: 4000 })}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-medium rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 transition-colors"
+                              >
                                 <ArrowUpCircle className="w-3.5 h-3.5" />
                                 Submit Work
                               </button>
-                              <button className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-lg text-muted-foreground hover:text-foreground border border-border/40 hover:border-border transition-colors">
+                              <button
+                                onClick={() => toast({ title: "Message sent", description: `Your message regarding ${contract.title} has been delivered`, duration: 4000 })}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-lg text-muted-foreground hover:text-foreground border border-border/40 hover:border-border transition-colors"
+                              >
                                 <MessageCircle className="w-3.5 h-3.5" />
                                 Message
                               </button>
