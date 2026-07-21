@@ -19,19 +19,19 @@ const badgeStyles = {
     badge: "bg-primary/10 text-primary border-primary/20",
     glow: "group-hover:shadow-[0_0_30px_rgba(183,100,50,0.15)] group-hover:border-primary/40",
     stamp: "text-primary/5",
-    spotlight: "rgba(183,100,50,0.07)",
+    spotlight: "hsla(183, 100%, 50%, 0.08)",
   },
   purple: {
     badge: "bg-secondary/10 text-secondary border-secondary/20",
     glow: "group-hover:shadow-[0_0_30px_rgba(168,85,247,0.15)] group-hover:border-secondary/40",
     stamp: "text-secondary/5",
-    spotlight: "rgba(168,85,247,0.07)",
+    spotlight: "hsla(183, 100%, 50%, 0.08)",
   },
   green: {
     badge: "bg-accent/10 text-accent border-accent/20",
     glow: "group-hover:shadow-[0_0_30px_rgba(142,76,55,0.15)] group-hover:border-accent/40",
     stamp: "text-accent/5",
-    spotlight: "rgba(142,76,55,0.07)",
+    spotlight: "hsla(183, 100%, 50%, 0.08)",
   },
 };
 
@@ -53,7 +53,7 @@ const BuilderCard = ({ builder }: { builder: Builder }) => {
       <div
         className="absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-[inherit]"
         style={{
-          background: `radial-gradient(200px circle at var(--glow-x) var(--glow-y), ${styles.spotlight}, transparent 70%)`,
+          background: `radial-gradient(350px circle at var(--glow-x) var(--glow-y), ${styles.spotlight}, transparent 70%)`,
         }}
       />
 

@@ -23,10 +23,10 @@ const categoryStyles = {
 };
 
 const spotlightColors: Record<string, string> = {
-  cyan: "rgba(183,100,50,0.07)",
-  purple: "rgba(168,85,247,0.07)",
-  green: "rgba(142,76,55,0.07)",
-  orange: "rgba(249,115,22,0.07)",
+  cyan: "hsla(183, 100%, 50%, 0.08)",
+  purple: "hsla(183, 100%, 50%, 0.08)",
+  green: "hsla(183, 100%, 50%, 0.08)",
+  orange: "hsla(183, 100%, 50%, 0.08)",
 };
 
 const ProjectCard = ({ project }: { project: Project }) => {
@@ -44,7 +44,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
       <div
         className="absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-[inherit]"
         style={{
-          background: `radial-gradient(200px circle at var(--glow-x) var(--glow-y), ${spotlightColors[project.categoryColor] || spotlightColors.cyan}, transparent 70%)`,
+          background: `radial-gradient(350px circle at var(--glow-x) var(--glow-y), ${spotlightColors[project.categoryColor] || spotlightColors.cyan}, transparent 70%)`,
         }}
       />
 
