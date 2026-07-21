@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, type FormEvent } from "react";
 import heroBg from "@/assets/hero-bg.jpg";
 import { ArrowRight, Sparkles, Users, Rocket, Terminal, RefreshCw, Send, Zap } from "lucide-react";
 import { NumberTicker } from "@/components/magicui/number-ticker";
@@ -99,7 +99,7 @@ const HeroSection = () => {
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
   }, [runSimulation]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const trimmed = customPrompt.trim();
     if (!trimmed) return;
