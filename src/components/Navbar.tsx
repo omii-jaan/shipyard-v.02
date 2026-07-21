@@ -318,45 +318,29 @@ const Navbar = () => {
           <div className="flex flex-col py-3">
             <div className="px-4 py-1.5 text-[10px] font-mono text-muted-foreground/50"># navigation</div>
             <button
-              onClick={() => { setOpen(false); }}
+              onClick={() => { setOpen(false); document.getElementById("builders")?.scrollIntoView({ behavior: "smooth" }); }}
               className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-primary/5 transition-colors group"
             >
               <span className="text-muted-foreground font-mono text-xs">{`>`}</span>
               <span className="flex-1">cd builders</span>
               <ChevronRight className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
             </button>
-            <a
-              href="#builders"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-colors group ml-7"
-            >
-              <span className="text-[10px] font-mono">#/</span>
-              Builders
-            </a>
-            <a
-              href="#projects"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-colors group ml-7"
-            >
-              <span className="text-[10px] font-mono">#/</span>
-              Projects
-            </a>
-            <a
-              href="#hire"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-colors group ml-7"
-            >
-              <span className="text-[10px] font-mono">#/</span>
-              Hire
-            </a>
-            <a
-              href="#discover"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-colors group ml-7"
-            >
-              <span className="text-[10px] font-mono">#/</span>
-              Discover
-            </a>
+            {[
+              { href: "#builders", label: "Builders" },
+              { href: "#projects", label: "Projects" },
+              { href: "#discover", label: "Hire" },
+              { href: "#discover", label: "Discover" },
+            ].map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-colors group ml-7"
+              >
+                <span className="text-[10px] font-mono">#/</span>
+                {link.label}
+              </a>
+            ))}
 
             <div className="h-px bg-white/5 my-2 mx-4" />
 
