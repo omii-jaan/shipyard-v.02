@@ -9,6 +9,23 @@ const Navbar = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [cmdOpen, setCmdOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
+
+  useEffect(() => {
+    const sections = ["builders", "projects", "discover"];
+    const observers: IntersectionObserver[] = [];
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const observer = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
+        { rootMargin: "-40% 0px -55% 0px" }
+      );
+      observer.observe(el);
+      observers.push(observer);
+    });
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
   const { user, signOut, loading } = useAuth();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const navigate = useNavigate();
@@ -70,10 +87,24 @@ const Navbar = () => {
 
         {/* Desktop Nav links */}
         <div className="hidden md:flex items-center gap-1 text-sm font-semibold text-muted-foreground">
-          <a href="#builders" className="relative px-3 py-2 hover:text-primary hover:text-glow-cyan transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-[2px] after:bg-primary after:rounded-full after:transition-all after:duration-300 hover:after:w-4/5">Builders</a>
-          <a href="#projects" className="relative px-3 py-2 hover:text-primary hover:text-glow-cyan transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-[2px] after:bg-primary after:rounded-full after:transition-all after:duration-300 hover:after:w-4/5">Projects</a>
-          <a href="#hire" className="relative px-3 py-2 hover:text-primary hover:text-glow-cyan transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-[2px] after:bg-primary after:rounded-full after:transition-all after:duration-300 hover:after:w-4/5">Hire</a>
-          <a href="#discover" className="relative px-3 py-2 hover:text-primary hover:text-glow-cyan transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-[2px] after:bg-primary after:rounded-full after:transition-all after:duration-300 hover:after:w-4/5">Discover</a>
+          {[
+            { id: "builders", label: "Builders" },
+            { id: "projects", label: "Projects" },
+            { id: "discover", label: "Hire" },
+            { id: "discover", label: "Discover" },
+          ].map((link) => (
+            <a
+              key={link.label}
+              href={`#${link.id}`}
+              className={`relative px-3 py-2 transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:bg-primary after:rounded-full after:transition-all after:duration-300 ${
+                activeSection === link.id
+                  ? "text-primary text-glow-cyan after:w-4/5"
+                  : "text-muted-foreground hover:text-primary hover:text-glow-cyan after:w-0 hover:after:w-4/5"
+              }`}
+            >
+              {link.label}
+            </a>
+          ))}
         </div>
 
         {/* CTA & Sign In */}
