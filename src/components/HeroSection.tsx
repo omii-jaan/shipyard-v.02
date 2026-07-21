@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import heroBg from "@/assets/hero-bg.jpg";
 import { ArrowRight, Sparkles, Users, Rocket, Terminal, Play, RotateCcw, Monitor, Code, Eye, RefreshCw, CheckCircle2 } from "lucide-react";
+import { NumberTicker } from "@/components/magicui/number-ticker";
+import { WordRotate } from "@/components/magicui/word-rotate";
 
 // Presets for the interactive terminal simulation
 const PRESETS = [
@@ -175,9 +177,9 @@ const PRESETS = [
 ];
 
 const stats = [
-  { label: "AI Builders Docked", value: "2,400+", icon: Users },
-  { label: "Projects Shipped", value: "8,900+", icon: Rocket },
-  { label: "Tools in the Yard", value: "1,200+", icon: Sparkles },
+  { label: "AI Builders Docked", value: 2400, suffix: "+", icon: Users },
+  { label: "Projects Shipped", value: 8900, suffix: "+", icon: Rocket },
+  { label: "Tools in the Yard", value: 1200, suffix: "+", icon: Sparkles },
 ];
 
 const HeroSection = () => {
@@ -248,9 +250,21 @@ const HeroSection = () => {
             </div>
 
             {/* Main Headline */}
-            <h1 className="font-display font-black text-5xl sm:text-6xl lg:text-7xl leading-[1.05] tracking-tight text-white mb-6">
-              Build. <span className="gradient-text-cyan text-glow-cyan">Dock.</span> <br />
-              Ship. <span className="gradient-text-purple text-glow-purple">Get Paid.</span>
+            <h1 className="font-display font-black text-5xl sm:text-6xl lg:text-7xl leading-[1.05] tracking-tight text-white mb-6 flex flex-wrap items-baseline gap-x-3">
+              Build.
+              <WordRotate
+                words={["Dock.", "Deploy.", "Launch.", "Ship."]}
+                duration={3000}
+                className="gradient-text-cyan text-glow-cyan font-black"
+                motionProps={{
+                  initial: { opacity: 0, y: -50 },
+                  animate: { opacity: 1, y: 0 },
+                  exit: { opacity: 0, y: 50 },
+                  transition: { duration: 0.25, ease: "easeOut" },
+                }}
+              />
+              Ship.
+              <span className="gradient-text-purple text-glow-purple">Get Paid.</span>
             </h1>
 
             {/* Description */}
@@ -273,10 +287,11 @@ const HeroSection = () => {
 
             {/* Core Stats */}
             <div className="grid grid-cols-3 gap-6 pt-6 border-t border-white/5 w-full">
-              {stats.map(({ label, value, icon: Icon }) => (
+              {stats.map(({ label, value, suffix, icon: Icon }) => (
                 <div key={label} className="flex flex-col">
                   <span className="font-display font-black text-xl md:text-2xl gradient-text-cyan flex items-center gap-1.5">
-                    {value}
+                    <NumberTicker value={value} className="text-xl md:text-2xl" />
+                    <span className="text-xl md:text-2xl">{suffix}</span>
                   </span>
                   <span className="text-[11px] text-muted-foreground font-semibold uppercase tracking-wider mt-1">{label}</span>
                 </div>
