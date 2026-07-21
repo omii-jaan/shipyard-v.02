@@ -197,7 +197,7 @@ const Navbar = () => {
               </Link>
               <Link
                 to="/login"
-                className="px-5 py-2.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-bold glow-cyan hover:opacity-95 hover:scale-102 active:scale-98 transition-all duration-200">
+                className="px-5 py-2.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-bold glow-cyan hover:opacity-95 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200">
                 Join as Builder
               </Link>
             </>

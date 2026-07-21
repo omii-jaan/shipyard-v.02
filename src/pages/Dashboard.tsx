@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { profileApi, projectApi } from "@/lib/api";
 import { format } from "date-fns";
@@ -20,7 +20,6 @@ const NAV_ITEMS = [
 const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const [profile, setProfile] = useState<any>(null);
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -222,10 +221,18 @@ const Dashboard = () => {
                   { label: "Vibe Score", value: `${stats.vibeScore}%`, icon: Zap, color: "secondary", sparkline: [70, 75, 72, 80, 78, 85, stats.vibeScore] },
                   { label: "Earnings", value: `$${stats.earnings.toLocaleString()}`, icon: LayoutDashboard, color: "primary", sparkline: [0, 400, 200, 800, 600, 1200, stats.earnings] },
                 ].map((stat, i) => (
-                  <div key={i} className="rounded-xl border border-white/5 bg-[#0b0f17] p-4 hover:border-primary/20 transition-colors">
+                    <div key={i} className="rounded-xl border border-white/5 bg-[#0b0f17] p-4 hover:border-primary/20 transition-colors">
                     <div className="flex items-center justify-between mb-2">
-                      <div className={`w-7 h-7 rounded-lg bg-${stat.color}/10 border border-${stat.color}/20 flex items-center justify-center`}>
-                        <stat.icon className={`w-3.5 h-3.5 text-${stat.color}`} />
+                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${
+                        stat.color === "primary" ? "bg-primary/10 border border-primary/20" :
+                        stat.color === "accent" ? "bg-accent/10 border border-accent/20" :
+                        "bg-secondary/10 border border-secondary/20"
+                      }`}>
+                        <stat.icon className={`w-3.5 h-3.5 ${
+                          stat.color === "primary" ? "text-primary" :
+                          stat.color === "accent" ? "text-accent" :
+                          "text-secondary"
+                        }`} />
                       </div>
                       <span className="text-[9px] font-mono uppercase text-muted-foreground/50">Live</span>
                     </div>
@@ -262,7 +269,11 @@ const Dashboard = () => {
                       <div key={i} className="px-4 py-2.5 hover:bg-white/[0.02] transition-colors">
                         <div className="flex items-start gap-2">
                           <div className="flex flex-col items-center gap-0.5 mt-0.5">
-                            <span className={`w-1.5 h-1.5 rounded-full bg-${item.status === "success" ? "accent" : item.status === "info" ? "primary" : "secondary"}`} />
+                            <span className={`w-1.5 h-1.5 rounded-full ${
+                              item.status === "success" ? "bg-accent" :
+                              item.status === "info" ? "bg-primary" :
+                              "bg-secondary"
+                            }`} />
                           </div>
                           <div className="min-w-0 flex-1">
                             <p className={`text-[11px] font-mono ${
@@ -369,8 +380,16 @@ const Dashboard = () => {
                     to={item.to}
                     className="group rounded-xl border border-white/5 bg-[#0b0f17] p-4 hover:border-primary/20 transition-all flex items-center gap-3"
                   >
-                    <div className={`w-9 h-9 rounded-lg bg-${item.color}/10 border border-${item.color}/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
-                      <item.icon className={`w-4 h-4 text-${item.color}`} />
+                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform ${
+                      item.color === "primary" ? "bg-primary/10 border border-primary/20" :
+                      item.color === "secondary" ? "bg-secondary/10 border border-secondary/20" :
+                      "bg-accent/10 border border-accent/20"
+                    }`}>
+                      <item.icon className={`w-4 h-4 ${
+                        item.color === "primary" ? "text-primary" :
+                        item.color === "secondary" ? "text-secondary" :
+                        "text-accent"
+                      }`} />
                     </div>
                     <div>
                       <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors">{item.label}</p>

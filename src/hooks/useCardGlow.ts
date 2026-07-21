@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react"
+import { useCallback, useRef } from "react";
 
 export function useCardGlow() {
   const ref = useRef<HTMLDivElement>(null)

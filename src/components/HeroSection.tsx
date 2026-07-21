@@ -161,7 +161,7 @@ const HeroSection = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-12">
-              <button className="group flex items-center justify-center gap-2.5 px-8 py-4 rounded-full bg-gradient-primary text-primary-foreground font-bold text-base glow-cyan hover:brightness-110 hover:scale-102 transition-all duration-200">
+              <button className="group flex items-center justify-center gap-2.5 px-8 py-4 rounded-full bg-gradient-primary text-primary-foreground font-bold text-base glow-cyan hover:brightness-110 hover:scale-[1.02] transition-all duration-200">
                 Dock Your Project
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>

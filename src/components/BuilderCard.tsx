@@ -1,4 +1,4 @@
-import { ExternalLink, Star, Briefcase, Code2, ShieldCheck } from "lucide-react";
+import { ExternalLink, Star, Code2, ShieldCheck } from "lucide-react";
 import { useCardGlow } from "@/hooks/useCardGlow";
 
 export interface Builder {
@@ -39,7 +39,7 @@ const BuilderCard = ({ builder }: { builder: Builder }) => {
   const styles = badgeStyles[builder.badgeColor];
   const { ref, handleMouseMove, handleMouseLeave } = useCardGlow();
 
-  const commitActivity = Array.from({ length: 14 }, (_, i) => Math.floor(Math.sin(i + builder.id) * 3) + 2);
+  const commitActivity = Array.from({ length: 14 }, (_, i) => Math.max(0, Math.floor(Math.sin(i + builder.id) * 3) + 2));
   const lastActive = ["now", "2m ago", "8m ago", "17m ago", "1h ago"][builder.id % 5];
 
   return (
