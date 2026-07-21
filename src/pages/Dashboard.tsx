@@ -176,8 +176,10 @@ const Dashboard = () => {
       try {
         const contractsData = await contractApi.getAll({ builder_id: user.id });
         setContracts(contractsData || []);
+        setStats((s) => ({ ...s, activeContracts: (contractsData || []).filter((c: Contract) => c.status === "active").length, earnings: (contractsData || []).reduce((sum: number, c: Contract) => sum + (c.amount_usd || 0), 0) }));
       } catch {
         setContracts(MOCK_CONTRACTS);
+        setStats((s) => ({ ...s, activeContracts: MOCK_CONTRACTS.filter((c) => c.status === "active").length, earnings: MOCK_CONTRACTS.reduce((sum, c) => sum + (c.amount_usd || 0), 0) }));
       } finally {
         setLoading(false);
       }
