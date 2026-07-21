@@ -188,7 +188,7 @@ const Dashboard = () => {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-[#080b14] flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
           <span className="text-xs font-mono text-muted-foreground">{`> connecting to bridge...`}</span>
@@ -200,11 +200,11 @@ const Dashboard = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-[#080b14] flex">
+    <div className="min-h-screen bg-background flex">
       {/* ---- Sidebar ---- */}
-      <aside className="hidden lg:flex flex-col w-56 border-r border-white/5 bg-[#0b0f17] shrink-0">
+      <aside className="hidden lg:flex flex-col w-56 border-r border-border/50 bg-muted shrink-0">
         {/* Brand */}
-        <div className="flex items-center gap-2.5 px-5 h-14 border-b border-white/5">
+        <div className="flex items-center gap-2.5 px-5 h-14 border-b border-border/50">
           <div className="w-7 h-7 rounded-full bg-gradient-primary flex items-center justify-center">
             <Zap className="w-3.5 h-3.5 text-primary-foreground" />
           </div>
@@ -212,7 +212,7 @@ const Dashboard = () => {
         </div>
 
         {/* User card */}
-        <div className="px-4 py-3.5 border-b border-white/5">
+        <div className="px-4 py-3.5 border-b border-border/50">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center shrink-0">
               {user.user_metadata?.avatar_url ? (
@@ -262,7 +262,7 @@ const Dashboard = () => {
         </div>
 
         {/* Bottom status */}
-        <div className="px-4 py-2.5 border-t border-white/5 flex items-center justify-between">
+        <div className="px-4 py-2.5 border-t border-border/50 flex items-center justify-between">
           <span className="text-[9px] font-mono text-muted-foreground/40">{`[bridge] $`}</span>
           <span className="text-[9px] font-mono text-accent/60">{`● live`}</span>
         </div>
@@ -271,7 +271,7 @@ const Dashboard = () => {
       {/* ---- Main Area ---- */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* ---- Top Bar ---- */}
-        <header className="h-14 border-b border-white/5 bg-[#0b0f17]/80 backdrop-blur-xl flex items-center justify-between px-4 md:px-6 shrink-0">
+        <header className="h-14 border-b border-border/50 bg-muted/80 backdrop-blur-xl flex items-center justify-between px-4 md:px-6 shrink-0">
           <div className="flex items-center gap-3">
             <span className="text-xs font-mono text-muted-foreground/60 hidden sm:block">{`[~] $`}</span>
             <span className="text-xs font-mono text-primary hidden sm:block">{`./${activeTab}`}</span>
@@ -279,10 +279,10 @@ const Dashboard = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+            <button className="w-7 h-7 rounded-lg bg-muted/50 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
               <Search className="w-3.5 h-3.5" />
             </button>
-            <button className="relative w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+            <button className="relative w-7 h-7 rounded-lg bg-muted/50 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
               <Bell className="w-3.5 h-3.5" />
               <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-primary text-[6px] font-bold text-primary-foreground flex items-center justify-center">3</span>
             </button>
@@ -331,7 +331,7 @@ const Dashboard = () => {
                   { label: "Vibe Score", value: `${stats.vibeScore}%`, icon: Zap, color: "secondary", sparkline: [70, 75, 72, 80, 78, 85, stats.vibeScore] },
                   { label: "Earnings", value: `$${stats.earnings.toLocaleString()}`, icon: LayoutDashboard, color: "primary", sparkline: [0, 400, 200, 800, 600, 1200, stats.earnings] },
                 ].map((stat, i) => (
-                    <div key={i} className="rounded-xl border border-white/5 bg-[#0b0f17] p-4 hover:border-primary/20 transition-colors">
+                    <div key={i} className="rounded-xl border border-border/50 bg-muted p-4 hover:border-primary/20 transition-colors">
                     <div className="flex items-center justify-between mb-2">
                       <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${
                         stat.color === "primary" ? "bg-primary/10 border border-primary/20" :
@@ -369,8 +369,8 @@ const Dashboard = () => {
               {/* Activity feed + Ships */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Activity */}
-                <div className="lg:col-span-1 rounded-xl border border-white/5 bg-[#0b0f17] overflow-hidden">
-                  <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between">
+                <div className="lg:col-span-1 rounded-xl border border-border/50 bg-muted overflow-hidden">
+                  <div className="px-4 py-3 border-b border-border/50 flex items-center justify-between">
                     <span className="text-xs font-mono text-foreground font-semibold">Activity</span>
                     <span className="text-[9px] font-mono text-muted-foreground/50">tail -f</span>
                   </div>
@@ -411,7 +411,7 @@ const Dashboard = () => {
                   </div>
 
                   {projects.length === 0 ? (
-                    <div className="rounded-xl border border-white/5 bg-[#0b0f17] p-8 text-center">
+                    <div className="rounded-xl border border-border/50 bg-muted p-8 text-center">
                       <FolderGit2 className="w-10 h-10 mx-auto text-muted-foreground/30 mb-3" />
                       <p className="text-sm font-semibold text-foreground mb-1">No ships docked yet</p>
                       <p className="text-xs text-muted-foreground mb-4">Connect your repo and launch your first ship.</p>
@@ -429,7 +429,7 @@ const Dashboard = () => {
                         <Link
                           key={project.id}
                           to={`/dashboard/projects/${project.id}`}
-                          className="group rounded-xl border border-white/5 bg-[#0b0f17] p-4 hover:border-primary/20 transition-all"
+                          className="group rounded-xl border border-border/50 bg-muted p-4 hover:border-primary/20 transition-all"
                         >
                           <div className="flex items-start justify-between mb-2">
                             <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
@@ -440,7 +440,7 @@ const Dashboard = () => {
                                 ? "bg-accent/10 text-accent border border-accent/20"
                                 : project.status === "docked"
                                 ? "bg-primary/10 text-primary border border-primary/20"
-                                : "bg-muted text-muted-foreground border border-white/10"
+                                : "bg-muted text-muted-foreground border border-border"
                             }`}>
                               {project.status}
                             </span>
@@ -453,17 +453,17 @@ const Dashboard = () => {
                           </p>
                           <div className="flex flex-wrap gap-1">
                             {project.stack?.slice(0, 3).map((tech: string) => (
-                              <span key={tech} className="px-1.5 py-0.5 text-[9px] rounded bg-white/5 text-muted-foreground font-mono">
+                              <span key={tech} className="px-1.5 py-0.5 text-[9px] rounded bg-muted/50 text-muted-foreground font-mono">
                                 {tech}
                               </span>
                             ))}
                             {project.stack && project.stack.length > 3 && (
-                              <span className="px-1.5 py-0.5 text-[9px] rounded bg-white/5 text-muted-foreground font-mono">
+                              <span className="px-1.5 py-0.5 text-[9px] rounded bg-muted/50 text-muted-foreground font-mono">
                                 +{project.stack.length - 3}
                               </span>
                             )}
                           </div>
-                          <div className="flex items-center justify-between mt-3 pt-2 border-t border-white/5">
+                          <div className="flex items-center justify-between mt-3 pt-2 border-t border-border/50">
                             <span className="text-[9px] font-mono text-muted-foreground/60">
                               {format(new Date(project.created_at), "MMM d")}
                             </span>
@@ -488,7 +488,7 @@ const Dashboard = () => {
                   <Link
                     key={i}
                     to={item.to}
-                    className="group rounded-xl border border-white/5 bg-[#0b0f17] p-4 hover:border-primary/20 transition-all flex items-center gap-3"
+                    className="group rounded-xl border border-border/50 bg-muted p-4 hover:border-primary/20 transition-all flex items-center gap-3"
                   >
                     <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform ${
                       item.color === "primary" ? "bg-primary/10 border border-primary/20" :
@@ -521,16 +521,16 @@ const Dashboard = () => {
                   <p className="text-xs font-mono text-muted-foreground">{`${projects.length} ships docked`}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="flex rounded-lg border border-white/10 overflow-hidden">
+                  <div className="flex rounded-lg border border-border overflow-hidden">
                     <button
                       onClick={() => setShipView("grid")}
-                      className={`p-2 ${shipView === "grid" ? "bg-primary/20 text-primary" : "bg-white/5 text-muted-foreground hover:text-foreground"} transition-colors`}
+                      className={`p-2 ${shipView === "grid" ? "bg-primary/20 text-primary" : "bg-muted/50 text-muted-foreground hover:text-foreground"} transition-colors`}
                     >
                       <Grid3X3 className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => setShipView("list")}
-                      className={`p-2 ${shipView === "list" ? "bg-primary/20 text-primary" : "bg-white/5 text-muted-foreground hover:text-foreground"} transition-colors`}
+                      className={`p-2 ${shipView === "list" ? "bg-primary/20 text-primary" : "bg-muted/50 text-muted-foreground hover:text-foreground"} transition-colors`}
                     >
                       <List className="w-3.5 h-3.5" />
                     </button>
@@ -554,7 +554,7 @@ const Dashboard = () => {
                     value={shipSearch}
                     onChange={(e) => setShipSearch(e.target.value)}
                     placeholder="Search ships..."
-                    className="w-full pl-9 pr-3 py-2 rounded-lg bg-[#0b0f17] border border-white/10 text-xs text-foreground placeholder:text-muted-foreground/40 outline-none focus:border-primary/40 transition-all font-mono"
+                    className="w-full pl-9 pr-3 py-2 rounded-lg bg-muted border border-border text-xs text-foreground placeholder:text-muted-foreground/40 outline-none focus:border-primary/40 transition-all font-mono"
                   />
                 </div>
                 <div className="flex gap-2">
@@ -565,7 +565,7 @@ const Dashboard = () => {
                       className={`px-3 py-2 rounded-lg text-[10px] font-mono font-semibold border transition-all ${
                         shipStatus === s
                           ? "bg-primary/15 text-primary border-primary/30"
-                          : "bg-[#0b0f17] text-muted-foreground border-white/10 hover:text-foreground"
+                          : "bg-muted text-muted-foreground border-border hover:text-foreground"
                       }`}
                     >
                       {s === "all" ? "All" : s}
@@ -576,7 +576,7 @@ const Dashboard = () => {
 
               {/* Ships content */}
               {projects.length === 0 ? (
-                <div className="rounded-xl border border-white/5 bg-[#0b0f17] p-12 text-center">
+                <div className="rounded-xl border border-border/50 bg-muted p-12 text-center">
                   <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
                     <FolderGit2 className="w-6 h-6 text-primary" />
                   </div>
@@ -597,7 +597,7 @@ const Dashboard = () => {
                     .filter((p) => shipStatus === "all" || p.status === shipStatus)
                     .filter((p) => !shipSearch || p.title.toLowerCase().includes(shipSearch.toLowerCase()))
                     .map((project) => (
-                      <div key={project.id} className="group rounded-xl border border-white/5 bg-[#0b0f17] p-4 hover:border-primary/20 transition-all">
+                      <div key={project.id} className="group rounded-xl border border-border/50 bg-muted p-4 hover:border-primary/20 transition-all">
                         <div className="flex items-start justify-between mb-2">
                           <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
                             <FolderGit2 className="w-4 h-4 text-primary" />
@@ -607,7 +607,7 @@ const Dashboard = () => {
                               ? "bg-accent/10 text-accent border-accent/20"
                               : project.status === "docked"
                               ? "bg-primary/10 text-primary border-primary/20"
-                              : "bg-muted text-muted-foreground border-white/10"
+                              : "bg-muted text-muted-foreground border-border"
                           }`}>
                             {project.status}
                           </span>
@@ -620,13 +620,13 @@ const Dashboard = () => {
                         </p>
                         <div className="flex flex-wrap gap-1 mb-3">
                           {project.stack?.slice(0, 3).map((tech: string) => (
-                            <span key={tech} className="px-1.5 py-0.5 text-[9px] rounded bg-white/5 text-muted-foreground font-mono">{tech}</span>
+                            <span key={tech} className="px-1.5 py-0.5 text-[9px] rounded bg-muted/50 text-muted-foreground font-mono">{tech}</span>
                           ))}
                           {project.stack?.length > 3 && (
-                            <span className="px-1.5 py-0.5 text-[9px] rounded bg-white/5 text-muted-foreground font-mono">+{project.stack.length - 3}</span>
+                            <span className="px-1.5 py-0.5 text-[9px] rounded bg-muted/50 text-muted-foreground font-mono">+{project.stack.length - 3}</span>
                           )}
                         </div>
-                        <div className="flex items-center justify-between pt-2 border-t border-white/5">
+                        <div className="flex items-center justify-between pt-2 border-t border-border/50">
                           <div className="flex items-center gap-2">
                             <span className="flex items-center gap-1 text-[9px] font-mono text-muted-foreground/60">
                               <Star className="w-2.5 h-2.5" />
@@ -664,10 +664,10 @@ const Dashboard = () => {
                     ))}
                 </div>
               ) : (
-                <div className="rounded-xl border border-white/5 bg-[#0b0f17] overflow-hidden">
+                <div className="rounded-xl border border-border/50 bg-muted overflow-hidden">
                   <table className="w-full text-left">
                     <thead>
-                      <tr className="border-b border-white/5 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+                      <tr className="border-b border-border/50 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
                         <th className="px-4 py-3 font-semibold">Name</th>
                         <th className="px-4 py-3 font-semibold">Status</th>
                         <th className="px-4 py-3 font-semibold hidden sm:table-cell">Stack</th>
@@ -681,7 +681,7 @@ const Dashboard = () => {
                         .filter((p) => shipStatus === "all" || p.status === shipStatus)
                         .filter((p) => !shipSearch || p.title.toLowerCase().includes(shipSearch.toLowerCase()))
                         .map((project) => (
-                          <tr key={project.id} className="border-b border-white/5 last:border-b-0 hover:bg-white/[0.02] transition-colors">
+                          <tr key={project.id} className="border-b border-border/50 last:border-b-0 hover:bg-white/[0.02] transition-colors">
                             <td className="px-4 py-3">
                               <div className="flex items-center gap-2">
                                 <FolderGit2 className="w-3.5 h-3.5 text-primary shrink-0" />
@@ -694,7 +694,7 @@ const Dashboard = () => {
                                   ? "bg-accent/10 text-accent border-accent/20"
                                   : project.status === "docked"
                                   ? "bg-primary/10 text-primary border-primary/20"
-                                  : "bg-muted text-muted-foreground border-white/10"
+                                  : "bg-muted text-muted-foreground border-border"
                               }`}>
                                 {project.status}
                               </span>
@@ -702,7 +702,7 @@ const Dashboard = () => {
                             <td className="px-4 py-3 hidden sm:table-cell">
                               <div className="flex gap-1">
                                 {project.stack?.slice(0, 2).map((tech: string) => (
-                                  <span key={tech} className="px-1.5 py-0.5 text-[9px] rounded bg-white/5 text-muted-foreground font-mono">{tech}</span>
+                                  <span key={tech} className="px-1.5 py-0.5 text-[9px] rounded bg-muted/50 text-muted-foreground font-mono">{tech}</span>
                                 ))}
                               </div>
                             </td>
@@ -959,7 +959,7 @@ const Dashboard = () => {
           {activeTab === "profile" && (
             <div className="max-w-6xl mx-auto space-y-6">
               {/* Profile Header */}
-              <div className="rounded-2xl border border-white/10 bg-card p-6 md:p-8">
+              <div className="rounded-2xl border border-border bg-card p-6 md:p-8">
                 <div className="flex flex-col md:flex-row md:items-start gap-6">
                   <div className="relative shrink-0">
                     <div className="w-20 h-20 rounded-full bg-gradient-primary flex items-center justify-center overflow-hidden">
@@ -986,21 +986,21 @@ const Dashboard = () => {
                           value={editForm.full_name}
                           onChange={(e) => updateFormField("full_name", e.target.value)}
                           placeholder="Display name"
-                          className="w-full bg-transparent border-b border-white/10 focus:border-primary outline-none font-display font-black text-2xl md:text-3xl text-foreground pb-1 mb-2"
+                          className="w-full bg-transparent border-b border-border focus:border-primary outline-none font-display font-black text-2xl md:text-3xl text-foreground pb-1 mb-2"
                         />
                         <input
                           type="text"
                           value={editForm.username}
                           onChange={(e) => updateFormField("username", e.target.value)}
                           placeholder="username"
-                          className="w-full bg-transparent border-b border-white/10 focus:border-primary outline-none text-sm font-mono text-muted-foreground pb-1 mb-2"
+                          className="w-full bg-transparent border-b border-border focus:border-primary outline-none text-sm font-mono text-muted-foreground pb-1 mb-2"
                         />
                         <textarea
                           value={editForm.bio}
                           onChange={(e) => updateFormField("bio", e.target.value)}
                           placeholder="Tell builders and founders about yourself..."
                           rows={3}
-                          className="w-full bg-transparent border border-white/10 focus:border-primary outline-none rounded-lg text-sm text-foreground/80 p-2 mb-4 resize-none"
+                          className="w-full bg-transparent border border-border focus:border-primary outline-none rounded-lg text-sm text-foreground/80 p-2 mb-4 resize-none"
                         />
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-bold text-primary uppercase tracking-wider">
@@ -1031,7 +1031,7 @@ const Dashboard = () => {
                             {profile?.role || userRole}
                           </span>
                           {profile?.stack?.slice(0, 3).map((tech) => (
-                            <span key={tech} className="px-2 py-0.5 text-[10px] font-mono rounded-md bg-white/5 border border-white/10 text-muted-foreground">
+                            <span key={tech} className="px-2 py-0.5 text-[10px] font-mono rounded-md bg-muted/50 border border-border text-muted-foreground">
                               {tech}
                             </span>
                           ))}
@@ -1045,7 +1045,7 @@ const Dashboard = () => {
                     )}
                   </div>
                   {!isEditing && (
-                    <button onClick={startEditing} className="self-start px-4 py-2 rounded-lg border border-white/10 bg-white/5 text-xs font-bold text-foreground hover:bg-white/10 hover:border-white/20 transition-all flex items-center gap-2 shrink-0">
+                    <button onClick={startEditing} className="self-start px-4 py-2 rounded-lg border border-border bg-muted/50 text-xs font-bold text-foreground hover:bg-white/10 hover:border-white/20 transition-all flex items-center gap-2 shrink-0">
                       <Pencil className="w-3 h-3" />
                       Edit Profile
                     </button>
@@ -1061,7 +1061,7 @@ const Dashboard = () => {
                   { label: "Vibe Score", value: `${profile?.vibe_score || 0}%`, icon: Zap, color: "secondary" },
                   { label: "Active Contracts", value: stats.activeContracts, icon: FileText, color: "primary" },
                 ].map((stat, i) => (
-                  <div key={i} className="rounded-xl border border-white/5 bg-card p-4">
+                  <div key={i} className="rounded-xl border border-border/50 bg-card p-4">
                     <div className={`w-7 h-7 rounded-lg flex items-center justify-center mb-3 ${
                       stat.color === "primary" ? "bg-primary/10 border border-primary/20" :
                       stat.color === "accent" ? "bg-accent/10 border border-accent/20" :
@@ -1084,7 +1084,7 @@ const Dashboard = () => {
                 {/* Left: Stack + Social */}
                 <div className="lg:col-span-2 space-y-6">
                   {/* Tech Stack */}
-                  <div className="rounded-2xl border border-white/5 bg-card p-6">
+                  <div className="rounded-2xl border border-border/50 bg-card p-6">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-display font-bold text-lg text-foreground">Tech Stack</h3>
                       {!isEditing && (
@@ -1097,7 +1097,7 @@ const Dashboard = () => {
                       <>
                         <div className="flex flex-wrap gap-2 mb-3">
                           {editForm.stack.map((tech) => (
-                            <span key={tech} className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-mono rounded-lg bg-white/5 border border-white/10 text-foreground/80">
+                            <span key={tech} className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-mono rounded-lg bg-muted/50 border border-border text-foreground/80">
                               {tech}
                               <button onClick={() => removeStackTag(tech)} className="hover:text-destructive transition-colors">
                                 <X className="w-3 h-3" />
@@ -1112,7 +1112,7 @@ const Dashboard = () => {
                             onChange={(e) => setNewStackTag(e.target.value)}
                             onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addStackTag(); } }}
                             placeholder="Add a technology..."
-                            className="flex-1 bg-transparent border border-white/10 focus:border-primary outline-none rounded-lg text-xs font-mono text-foreground px-3 py-1.5"
+                            className="flex-1 bg-transparent border border-border focus:border-primary outline-none rounded-lg text-xs font-mono text-foreground px-3 py-1.5"
                           />
                           <button onClick={addStackTag} disabled={!newStackTag.trim()} className="px-3 py-1.5 rounded-lg bg-primary/20 border border-primary/30 text-primary font-bold text-[10px] hover:bg-primary/30 transition-all disabled:opacity-30 flex items-center gap-1">
                             <Plus className="w-3 h-3" /> Add
@@ -1123,7 +1123,7 @@ const Dashboard = () => {
                       profile?.stack && profile.stack.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
                           {profile.stack.map((tech) => (
-                            <span key={tech} className="px-3 py-1.5 text-xs font-mono rounded-lg bg-white/5 border border-white/10 text-foreground/80 hover:border-primary/30 hover:bg-primary/5 transition-colors">
+                            <span key={tech} className="px-3 py-1.5 text-xs font-mono rounded-lg bg-muted/50 border border-border text-foreground/80 hover:border-primary/30 hover:bg-primary/5 transition-colors">
                               {tech}
                             </span>
                           ))}
@@ -1135,7 +1135,7 @@ const Dashboard = () => {
                   </div>
 
                   {/* Social Links */}
-                  <div className="rounded-2xl border border-white/5 bg-card p-6">
+                  <div className="rounded-2xl border border-border/50 bg-card p-6">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-display font-bold text-lg text-foreground">Social Links</h3>
                       {!isEditing && (
@@ -1148,8 +1148,8 @@ const Dashboard = () => {
                       <>
                         <div className="space-y-2 mb-3">
                           {Object.entries(editForm.social_links).map(([platform, url]) => (
-                            <div key={platform} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.02] border border-white/5">
-                              <div className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                            <div key={platform} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.02] border border-border/50">
+                              <div className="w-7 h-7 rounded-lg bg-muted/50 border border-border flex items-center justify-center shrink-0">
                                 {platform.toLowerCase() === "github" ? <Github className="w-3.5 h-3.5 text-muted-foreground" /> : <Globe className="w-3.5 h-3.5 text-muted-foreground" />}
                               </div>
                               <span className="text-xs font-mono text-muted-foreground capitalize w-20 shrink-0">{platform}</span>
@@ -1166,14 +1166,14 @@ const Dashboard = () => {
                             value={newLinkPlatform}
                             onChange={(e) => setNewLinkPlatform(e.target.value)}
                             placeholder="Platform (github, twitter...)"
-                            className="w-28 bg-transparent border border-white/10 focus:border-primary outline-none rounded-lg text-xs font-mono text-foreground px-3 py-1.5"
+                            className="w-28 bg-transparent border border-border focus:border-primary outline-none rounded-lg text-xs font-mono text-foreground px-3 py-1.5"
                           />
                           <input
                             type="text"
                             value={newLinkUrl}
                             onChange={(e) => setNewLinkUrl(e.target.value)}
                             placeholder="https://..."
-                            className="flex-1 bg-transparent border border-white/10 focus:border-primary outline-none rounded-lg text-xs font-mono text-foreground px-3 py-1.5"
+                            className="flex-1 bg-transparent border border-border focus:border-primary outline-none rounded-lg text-xs font-mono text-foreground px-3 py-1.5"
                           />
                           <button onClick={addSocialLink} disabled={!newLinkPlatform.trim() || !newLinkUrl.trim()} className="px-3 py-1.5 rounded-lg bg-primary/20 border border-primary/30 text-primary font-bold text-[10px] hover:bg-primary/30 transition-all disabled:opacity-30 flex items-center gap-1">
                             <Plus className="w-3 h-3" /> Add
@@ -1184,8 +1184,8 @@ const Dashboard = () => {
                       profile?.social_links && Object.keys(profile.social_links).length > 0 ? (
                         <div className="space-y-2">
                           {Object.entries(profile.social_links).map(([platform, url]) => (
-                            <a key={platform} href={url} target="_blank" rel="noreferrer" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors group">
-                              <div className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                            <a key={platform} href={url} target="_blank" rel="noreferrer" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted/50 transition-colors group">
+                              <div className="w-7 h-7 rounded-lg bg-muted/50 border border-border flex items-center justify-center shrink-0">
                                 {platform.toLowerCase() === "github" ? <Github className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground" /> :
                                  platform.toLowerCase() === "twitter" || platform.toLowerCase() === "x" ? <Globe className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground" /> :
                                  <Globe className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground" />}
@@ -1204,7 +1204,7 @@ const Dashboard = () => {
 
                 {/* Right: Identity */}
                 <div className="space-y-6">
-                  <div className="rounded-2xl border border-white/5 bg-card p-6">
+                  <div className="rounded-2xl border border-border/50 bg-card p-6">
                     <h3 className="font-display font-bold text-lg text-foreground mb-4">Identity</h3>
                     <div className="space-y-4">
                       <div>
@@ -1234,7 +1234,7 @@ const Dashboard = () => {
                   </div>
 
                   {/* Recent Projects */}
-                  <div className="rounded-2xl border border-white/5 bg-card p-6">
+                  <div className="rounded-2xl border border-border/50 bg-card p-6">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-display font-bold text-lg text-foreground">Recent Ships</h3>
                       <button onClick={() => setActiveTab("ships")} className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors">
@@ -1244,7 +1244,7 @@ const Dashboard = () => {
                     {projects.length > 0 ? (
                       <div className="space-y-3">
                         {projects.slice(0, 4).map((project) => (
-                          <div key={project.id} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">
+                          <div key={project.id} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted/50 transition-colors">
                             <div className="w-7 h-7 rounded-lg bg-primary/5 border border-primary/10 flex items-center justify-center shrink-0">
                               <FolderGit2 className="w-3.5 h-3.5 text-primary" />
                             </div>
@@ -1265,8 +1265,8 @@ const Dashboard = () => {
 
               {/* Save/Cancel bar */}
               {isEditing && (
-                <div className="sticky bottom-0 flex items-center justify-end gap-3 p-4 bg-background/80 backdrop-blur-xl border-t border-white/5 rounded-b-2xl">
-                  <button onClick={cancelEditing} disabled={saving} className="px-4 py-2 rounded-lg border border-white/10 bg-white/5 text-xs font-bold text-muted-foreground hover:text-foreground hover:bg-white/10 transition-all disabled:opacity-50">
+                <div className="sticky bottom-0 flex items-center justify-end gap-3 p-4 bg-background/80 backdrop-blur-xl border-t border-border/50 rounded-b-2xl">
+                  <button onClick={cancelEditing} disabled={saving} className="px-4 py-2 rounded-lg border border-border bg-muted/50 text-xs font-bold text-muted-foreground hover:text-foreground hover:bg-white/10 transition-all disabled:opacity-50">
                     Cancel
                   </button>
                   <button onClick={handleSave} disabled={saving} className="px-5 py-2 rounded-lg bg-gradient-primary text-primary-foreground font-bold text-xs glow-cyan hover:brightness-110 transition-all disabled:opacity-50 flex items-center gap-2">

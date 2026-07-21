@@ -273,7 +273,7 @@ const Navbar = () => {
           onClick={() => setOpen(false)}
         />
         <div
-          className={`absolute top-0 right-0 h-full w-[82vw] max-w-sm bg-[#0b0f17] border-l border-white/10 shadow-2xl transition-transform duration-300 ease-out ${
+          className={`absolute top-0 right-0 h-full w-[82vw] max-w-sm bg-card border-l border-white/10 shadow-2xl transition-transform duration-300 ease-out ${
             open ? "translate-x-0" : "translate-x-full"
           }`}
         >

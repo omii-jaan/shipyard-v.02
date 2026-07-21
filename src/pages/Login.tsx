@@ -138,9 +138,9 @@ const Login = () => {
         </div>
 
         {/* Terminal auth card */}
-        <div className="relative rounded-3xl border border-white/10 bg-[#0b0f17]/95 backdrop-blur-2xl shadow-[0_8px_40px_rgba(0,0,0,0.45)] overflow-hidden">
+        <div className="relative rounded-3xl border border-white/10 bg-muted/95 backdrop-blur-2xl shadow-[0_8px_40px_rgba(0,0,0,0.45)] overflow-hidden">
           {/* Terminal title bar */}
-          <div className="flex items-center justify-between px-5 py-3 border-b border-white/10 bg-[#111622]">
+          <div className="flex items-center justify-between px-5 py-3 border-b border-white/10 bg-card">
             <div className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
               <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
@@ -157,7 +157,7 @@ const Login = () => {
           </div>
 
           {/* Terminal log area */}
-          <div ref={logContainerRef} className="px-5 pt-4 pb-2 bg-[#0b0f17] max-h-28 overflow-y-auto border-b border-white/5">
+          <div ref={logContainerRef} className="px-5 pt-4 pb-2 bg-muted max-h-28 overflow-y-auto border-b border-white/5">
             {logLines.map((line, i) => (
               <p
                 key={i}
