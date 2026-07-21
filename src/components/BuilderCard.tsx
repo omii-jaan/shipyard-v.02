@@ -40,6 +40,7 @@ const BuilderCard = ({ builder }: { builder: Builder }) => {
   const { ref, handleMouseMove, handleMouseLeave } = useCardGlow();
 
   const commitActivity = Array.from({ length: 14 }, (_, i) => Math.floor(Math.sin(i + builder.id) * 3) + 2);
+  const lastActive = ["now", "2m ago", "8m ago", "17m ago", "1h ago"][builder.id % 5];
 
   return (
     <div
@@ -112,11 +113,14 @@ const BuilderCard = ({ builder }: { builder: Builder }) => {
         ))}
       </div>
 
-      {/* Simulated Live Contribution Activity */}
-      <div className="mb-5 p-2.5 rounded-xl bg-black/20 border border-white/5 flex items-center justify-between">
-        <div className="flex flex-col gap-0.5">
-          <span className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider">Telemetry</span>
-          <span className="text-[10px] text-white font-bold font-mono">Dock Activity</span>
+      {/* Telemetry */}
+      <div className="mb-5 p-2.5 rounded-xl bg-black/20 border border-white/5">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider">Telemetry</span>
+            <span className="text-[8px] font-mono text-accent/60">{`● ${lastActive}`}</span>
+          </div>
+          <span className="text-[9px] font-mono text-primary/70">{`> live`}</span>
         </div>
         <div className="flex gap-1 items-end h-6">
           {commitActivity.map((count, i) => {
@@ -125,8 +129,12 @@ const BuilderCard = ({ builder }: { builder: Builder }) => {
             return (
               <div 
                 key={i} 
-                className={`w-1.5 rounded-sm transition-all duration-300 ${bgClass}`}
-                style={{ height: `${(Math.max(1, count) / 5) * 100}%` }}
+                className={`w-1.5 rounded-sm transition-all duration-300 ${bgClass} ${count > 2 ? "animate-pulse" : ""}`}
+                style={{
+                  height: `${(Math.max(1, count) / 5) * 100}%`,
+                  animationDelay: `${i * 0.15}s`,
+                  animationDuration: "2s",
+                }}
                 title={`${count * 2} updates`}
               />
             );
