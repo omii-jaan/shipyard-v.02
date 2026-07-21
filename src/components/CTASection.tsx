@@ -1,4 +1,5 @@
 import { ArrowRight, Zap, Terminal, Compass } from "lucide-react";
+import { Link } from "react-router-dom";
 import { BlurFade } from "@/components/magicui/blur-fade";
 
 const CTASection = () => {
@@ -62,10 +63,10 @@ const CTASection = () => {
                 </ul>
               </div>
 
-              <button className="group w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-gradient-primary text-primary-foreground font-bold text-xs glow-cyan transition-all hover:brightness-115">
+              <Link to="/login" className="group w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-gradient-primary text-primary-foreground font-bold text-xs glow-cyan transition-all hover:brightness-110">
                 Join the Yard as Builder
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -105,10 +106,10 @@ const CTASection = () => {
                 </ul>
               </div>
 
-              <button className="group w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-gradient-secondary text-secondary-foreground font-bold text-xs glow-purple transition-all hover:brightness-115">
+              <a href="/#discover" className="group w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-gradient-secondary text-secondary-foreground font-bold text-xs glow-purple transition-all hover:brightness-110">
                 Search Shipped Projects
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </a>
             </div>
           </div>
 

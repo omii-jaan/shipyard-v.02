@@ -1,4 +1,5 @@
 import { ExternalLink, Rocket, Eye } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useCardGlow } from "@/hooks/useCardGlow";
 
 export interface Project {
@@ -6,6 +7,7 @@ export interface Project {
   title: string;
   description: string;
   builder: string;
+  builderHandle: string;
   builderAvatar: string;
   category: string;
   categoryColor: "cyan" | "purple" | "green" | "orange";
@@ -65,7 +67,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
             <h3 className="font-semibold text-foreground text-sm">{project.title}</h3>
             <div className="flex items-center gap-1.5 mt-0.5">
               <img src={project.builderAvatar} alt={project.builder} className="w-4 h-4 rounded-full" />
-              <span className="text-xs text-muted-foreground">{project.builder}</span>
+              <Link to={`/builder/${project.builderHandle}`} className="text-xs text-muted-foreground hover:text-primary transition-colors">{project.builder}</Link>
             </div>
           </div>
         </div>

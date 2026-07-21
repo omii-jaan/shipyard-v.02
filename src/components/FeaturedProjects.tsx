@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import ProjectCard, { Project } from "./ProjectCard";
 import { BlurFade } from "@/components/magicui/blur-fade";
 
@@ -7,6 +8,7 @@ const projects: Project[] = [
     title: "AI Email Reply Agent",
     description: "GPT-powered agent that reads your inbox context and drafts smart replies in your writing style. Handles 50+ emails/day autonomously.",
     builder: "Arjun Mehta",
+    builderHandle: "arjun_builds",
     builderAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=arjun&backgroundColor=b6e3f4",
     category: "AI Agent",
     categoryColor: "cyan",
@@ -20,6 +22,7 @@ const projects: Project[] = [
     title: "LLM Customer Support SaaS",
     description: "Multi-tenant support bot that ingests company docs and handles tier-1 tickets. Currently serving 200+ companies.",
     builder: "Priya Sharma",
+    builderHandle: "priya_ships",
     builderAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=priya&backgroundColor=d1d4f9",
     category: "AI SaaS",
     categoryColor: "purple",
@@ -33,6 +36,7 @@ const projects: Project[] = [
     title: "WhatsApp AI Assistant",
     description: "Personal AI assistant on WhatsApp — reminders, research, content drafting. 1,400 active users in 3 weeks.",
     builder: "Dev Patel",
+    builderHandle: "devpatel_ai",
     builderAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=devpatel&backgroundColor=b6e3f4",
     category: "AI Automation",
     categoryColor: "green",
@@ -46,6 +50,7 @@ const projects: Project[] = [
     title: "RAG Knowledge Base Tool",
     description: "Upload PDFs, docs, Notion pages. Ask anything. Built with a custom vector retrieval pipeline for accuracy.",
     builder: "Marcus Chen",
+    builderHandle: "marcus_vibe",
     builderAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=marcus&backgroundColor=c0aede",
     category: "AI Tool",
     categoryColor: "orange",
@@ -59,6 +64,7 @@ const projects: Project[] = [
     title: "AI Content Generator SaaS",
     description: "Generates SEO blogs, social posts, and ad copy trained on top-performing content. $800 MRR in 6 weeks.",
     builder: "Sofia Reyes",
+    builderHandle: "sofiaAI",
     builderAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sofia&backgroundColor=ffd5dc",
     category: "AI SaaS",
     categoryColor: "purple",
@@ -72,6 +78,7 @@ const projects: Project[] = [
     title: "Prompt-to-App Builder",
     description: "Describe an app in plain English, get a full working React prototype deployed in 60 seconds. Vibe coding at scale.",
     builder: "Yuki Tanaka",
+    builderHandle: "yuki_forge",
     builderAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=yuki&backgroundColor=c0aede",
     category: "Dev Tool",
     categoryColor: "cyan",
@@ -97,9 +104,9 @@ const FeaturedProjects = () => {
                 <span className="gradient-text-purple">Not side-projects.</span>
               </h2>
             </div>
-            <button className="text-sm font-medium text-muted-foreground hover:text-secondary transition-colors flex items-center gap-1 self-start md:self-auto">
+            <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-secondary transition-colors flex items-center gap-1 self-start md:self-auto">
               Browse all projects →
-            </button>
+            </Link>
           </div>
         </BlurFade>
 

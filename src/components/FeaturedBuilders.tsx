@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import BuilderCard, { Builder } from "./BuilderCard";
 import { BlurFade } from "@/components/magicui/blur-fade";
 
@@ -90,9 +91,9 @@ const FeaturedBuilders = () => {
                 <span className="gradient-text-cyan">Real ships, real builders.</span>
               </h2>
             </div>
-            <button className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 self-start md:self-auto">
+            <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 self-start md:self-auto">
               View all builders →
-            </button>
+            </Link>
           </div>
         </BlurFade>
 

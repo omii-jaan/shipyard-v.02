@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { profileApi, projectApi } from "@/lib/api";
+import { useTheme } from "@/context/ThemeContext";
+import { profileApi, projectApi, contractApi } from "@/lib/api";
+import type { Profile, Project, Contract, ContractMilestone } from "@/types";
 import { format } from "date-fns";
 import {
   Bell, LayoutDashboard, FolderGit2, FileText, User, Settings,
   LogOut, Plus, ExternalLink, Loader2, ChevronRight, Search, Zap,
-  List, Grid3X3, Trash2, Eye, Star
+  List, Grid3X3, Trash2, Eye, Star, Check, Pencil, Mail, Calendar, Globe, Github,
+  X, Save, Loader, Image, ArrowUpCircle, Clock, AlertTriangle, CircleDollarSign, MessageCircle, Sun, Moon, Monitor, Shield
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -20,10 +23,108 @@ const NAV_ITEMS = [
 const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<any>(null);
-  const [projects, setProjects] = useState<any[]>([]);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
+  const [isEditing, setIsEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [newStackTag, setNewStackTag] = useState("");
+  const [newLinkPlatform, setNewLinkPlatform] = useState("");
+  const [newLinkUrl, setNewLinkUrl] = useState("");
+  const [editForm, setEditForm] = useState<{
+    full_name: string;
+    username: string;
+    bio: string;
+    stack: string[];
+    social_links: Record<string, string>;
+  }>({ full_name: "", username: "", bio: "", stack: [], social_links: {} });
+  const [contracts, setContracts] = useState<Contract[]>([]);
+  const [contractFilter, setContractFilter] = useState("all");
+  const [expandedContract, setExpandedContract] = useState<string | null>(null);
+  const { theme, setTheme } = useTheme();
+  const [notifPrefs, setNotifPrefs] = useState({ email: true, inApp: true, marketing: false });
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+
+  const MOCK_CONTRACTS: Contract[] = [
+    { id: "c1", project_id: null, builder_id: "b1", founder_id: "f1", title: "AI Dashboard Integration", description: "Build a real-time AI analytics dashboard with live telemetry and LangChain-powered insights.", status: "active", amount_usd: 12000, currency: "USD", payment_status: "escrowed", escrow_transaction_id: null, milestones: [{ id: "m1", title: "API Design & Architecture", description: "Design REST API endpoints for data ingestion", amount_usd: 3000, status: "approved", due_date: "2026-01-15", completed_at: "2026-01-10" }, { id: "m2", title: "Backend Implementation", description: "Build LangChain agents and data pipelines", amount_usd: 4000, status: "approved", due_date: "2026-02-01", completed_at: "2026-01-28" }, { id: "m3", title: "Frontend Dashboard", description: "React dashboard with real-time charts", amount_usd: 3000, status: "in_progress", due_date: "2026-02-20", completed_at: null }, { id: "m4", title: "Deployment & Testing", description: "CI/CD pipeline setup and QA", amount_usd: 2000, status: "pending", due_date: "2026-03-01", completed_at: null }], started_at: "2026-01-05", completed_at: null, deadline: "2026-03-01", created_at: "2025-12-20", updated_at: "2026-01-28" },
+    { id: "c2", project_id: null, builder_id: "b2", founder_id: "f1", title: "API Rate Limiter Module", description: "Implement distributed rate limiting with Redis and FastAPI middleware.", status: "pending", amount_usd: 8000, currency: "USD", payment_status: "unpaid", escrow_transaction_id: null, milestones: [{ id: "m5", title: "Rate Limit Algorithm", description: "Design sliding window algorithm", amount_usd: 2500, status: "pending", due_date: "2026-02-10", completed_at: null }, { id: "m6", title: "Redis Integration", description: "Connect to Redis cluster and implement storage", amount_usd: 3000, status: "pending", due_date: "2026-02-25", completed_at: null }, { id: "m7", title: "Middleware & Testing", description: "FastAPI middleware with load tests", amount_usd: 2500, status: "pending", due_date: "2026-03-10", completed_at: null }], started_at: null, completed_at: null, deadline: "2026-03-15", created_at: "2026-01-28", updated_at: "2026-01-28" },
+    { id: "c3", project_id: null, builder_id: "b1", founder_id: "f2", title: "Multi-Agent Orchestrator", description: "Build an orchestration layer for coordinating multiple AI agents in a pipeline.", status: "completed", amount_usd: 15000, currency: "USD", payment_status: "released", escrow_transaction_id: "0x8a92...7b99", milestones: [{ id: "m8", title: "Agent Communication Protocol", description: "Design message passing between agents", amount_usd: 4000, status: "paid", due_date: "2025-11-15", completed_at: "2025-11-10" }, { id: "m9", title: "Task Queue System", description: "Implement priority-based task scheduling", amount_usd: 5000, status: "paid", due_date: "2025-12-01", completed_at: "2025-11-28" }, { id: "m10", title: "Monitoring Dashboard", description: "Real-time agent telemetry dashboard", amount_usd: 6000, status: "paid", due_date: "2025-12-20", completed_at: "2025-12-15" }], started_at: "2025-10-20", completed_at: "2025-12-18", deadline: "2025-12-25", created_at: "2025-10-15", updated_at: "2025-12-18" },
+    { id: "c4", project_id: null, builder_id: "b3", founder_id: "f1", title: "Vector Database Migration", description: "Migrate from Pinecone to Qdrant with zero downtime.", status: "disputed", amount_usd: 6000, currency: "USD", payment_status: "refunded", escrow_transaction_id: null, milestones: [{ id: "m11", title: "Data Export", description: "Export vectors from Pinecone", amount_usd: 2000, status: "approved", due_date: "2026-01-10", completed_at: "2026-01-08" }, { id: "m12", title: "Qdrant Setup", description: "Deploy and configure Qdrant cluster", amount_usd: 2000, status: "submitted", due_date: "2026-01-25", completed_at: "2026-01-22" }, { id: "m13", title: "Migration Script", description: "Write and test migration scripts", amount_usd: 2000, status: "pending", due_date: "2026-02-05", completed_at: null }], started_at: "2026-01-05", completed_at: null, deadline: "2026-02-10", created_at: "2025-12-28", updated_at: "2026-01-25" },
+  ];
+
+  const filteredContracts = contractFilter === "all" ? contracts : contracts.filter((c) => c.status === contractFilter);
+
+  const startEditing = () => {
+    setEditForm({
+      full_name: profile?.full_name || user?.user_metadata?.full_name || "",
+      username: profile?.username || user?.user_metadata?.user_name || "",
+      bio: profile?.bio || "",
+      stack: profile?.stack ? [...profile.stack] : [],
+      social_links: profile?.social_links ? { ...profile.social_links } : {},
+    });
+    setIsEditing(true);
+  };
+
+  const cancelEditing = () => {
+    setIsEditing(false);
+    setNewStackTag("");
+    setNewLinkPlatform("");
+    setNewLinkUrl("");
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const updated = await profileApi.update({
+        username: editForm.username,
+        full_name: editForm.full_name,
+        bio: editForm.bio,
+        stack: editForm.stack,
+        social_links: editForm.social_links,
+      });
+      setProfile(updated);
+      setIsEditing(false);
+    } catch (err) {
+      console.error("Failed to save profile:", err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const addStackTag = () => {
+    const tag = newStackTag.trim();
+    if (tag && !editForm.stack.includes(tag)) {
+      setEditForm((prev) => ({ ...prev, stack: [...prev.stack, tag] }));
+    }
+    setNewStackTag("");
+  };
+
+  const removeStackTag = (tag: string) => {
+    setEditForm((prev) => ({ ...prev, stack: prev.stack.filter((t) => t !== tag) }));
+  };
+
+  const addSocialLink = () => {
+    const platform = newLinkPlatform.trim().toLowerCase();
+    const url = newLinkUrl.trim();
+    if (platform && url) {
+      setEditForm((prev) => ({ ...prev, social_links: { ...prev.social_links, [platform]: url } }));
+    }
+    setNewLinkPlatform("");
+    setNewLinkUrl("");
+  };
+
+  const removeSocialLink = (platform: string) => {
+    setEditForm((prev) => {
+      const links = { ...prev.social_links };
+      delete links[platform];
+      return { ...prev, social_links: links };
+    });
+  };
+
+  const updateFormField = (field: string, value: string | string[]) => {
+    setEditForm((prev) => ({ ...prev, [field]: value }));
+  };
 
   const userName = user?.user_metadata?.full_name?.split(" ")[0] || user?.user_metadata?.user_name || "Builder";
   const userRole = user?.user_metadata?.role || "Builder";
@@ -68,6 +169,13 @@ const Dashboard = () => {
         });
       } catch (error) {
         console.error("Failed to load dashboard:", error);
+      }
+
+      try {
+        const contractsData = await contractApi.getAll({ builder_id: user.id });
+        setContracts(contractsData || []);
+      } catch {
+        setContracts(MOCK_CONTRACTS);
       } finally {
         setLoading(false);
       }
@@ -636,18 +744,654 @@ const Dashboard = () => {
             </div>
           )}
           {activeTab === "contracts" && (
-            <div className="max-w-6xl mx-auto flex items-center justify-center h-64">
-              <p className="text-sm font-mono text-muted-foreground">{`> contracts.pipeline — coming soon`}</p>
+            <div className="max-w-6xl mx-auto space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold text-foreground">Contracts</h2>
+                  <p className="text-sm text-muted-foreground font-mono">{contracts.length} total · {contracts.filter(c => c.status === "active").length} active</p>
+                </div>
+              </div>
+
+              <div className="flex gap-2 flex-wrap">
+                {["all", "active", "pending", "completed", "disputed"].map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setContractFilter(f)}
+                    className={`px-3 py-1.5 text-xs font-mono rounded-lg border transition-colors ${
+                      contractFilter === f
+                        ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
+                        : "bg-transparent border-border/40 text-muted-foreground hover:border-border"
+                    }`}
+                  >
+                    {f === "all" ? "all" : f}
+                    <span className="ml-1.5 opacity-60">
+                      ({f === "all" ? contracts.length : contracts.filter(c => c.status === f).length})
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              {filteredContracts.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-16 gap-3">
+                  <FileText className="w-10 h-10 text-muted-foreground/40" />
+                  <p className="text-sm font-mono text-muted-foreground">{`> no ${contractFilter === "all" ? "" : contractFilter + " "}contracts found`}</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {filteredContracts.map((contract) => (
+                    <div key={contract.id} className="bg-card border border-border rounded-xl overflow-hidden">
+                      <div className="p-5">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1.5">
+                              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-mono font-medium ${
+                                contract.status === "active" ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" :
+                                contract.status === "pending" ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" :
+                                contract.status === "completed" ? "bg-green-500/10 text-green-400 border border-green-500/20" :
+                                contract.status === "disputed" ? "bg-red-500/10 text-red-400 border border-red-500/20" :
+                                "bg-muted text-muted-foreground border border-border"
+                              }`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${
+                                  contract.status === "active" ? "bg-cyan-400" :
+                                  contract.status === "pending" ? "bg-amber-400" :
+                                  contract.status === "completed" ? "bg-green-400" :
+                                  contract.status === "disputed" ? "bg-red-400" :
+                                  "bg-muted-foreground"
+                                }`} />
+                                {contract.status}
+                              </span>
+                              <span className="text-sm font-mono text-muted-foreground">
+                                {contract.amount_usd !== null ? `$${contract.amount_usd.toLocaleString()}` : "—"}
+                              </span>
+                            </div>
+                            <h3 className="text-base font-medium text-foreground truncate">{contract.title}</h3>
+                            {contract.description && (
+                              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{contract.description}</p>
+                            )}
+                          </div>
+                          <div className="flex flex-col items-end gap-1 shrink-0">
+                            <span className="text-[11px] font-mono text-muted-foreground">
+                              {format(new Date(contract.created_at), "MMM d, yyyy")}
+                            </span>
+                            {contract.deadline && (
+                              <span className="text-[11px] font-mono text-muted-foreground/60 flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                {format(new Date(contract.deadline), "MMM d")}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="mt-4">
+                          <div className="flex items-center justify-between mb-1.5">
+                            <span className="text-[11px] font-mono text-muted-foreground">
+                              Milestones {contract.milestones.filter(m => m.status === "approved" || m.status === "paid").length}/{contract.milestones.length} completed
+                            </span>
+                            <span className="text-[11px] font-mono text-muted-foreground/60">
+                              {Math.round((contract.milestones.filter(m => m.status === "approved" || m.status === "paid").length / contract.milestones.length) * 100)}%
+                            </span>
+                          </div>
+                          <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{
+                                width: `${(contract.milestones.filter(m => m.status === "approved" || m.status === "paid").length / contract.milestones.length) * 100}%`,
+                                background: contract.status === "disputed"
+                                  ? "linear-gradient(90deg, #f87171, #ef4444)"
+                                  : contract.status === "completed"
+                                  ? "linear-gradient(90deg, #22d3a7, #10b981)"
+                                  : "linear-gradient(90deg, #22d3ee, #06b6d4)"
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                          {contract.milestones.slice(0, expandedContract === contract.id ? undefined : 2).map((ms) => (
+                            <span
+                              key={ms.id}
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-mono ${
+                                ms.status === "paid" || ms.status === "approved" ? "bg-green-500/8 text-green-400 border border-green-500/15" :
+                                ms.status === "in_progress" ? "bg-cyan-500/8 text-cyan-400 border border-cyan-500/15" :
+                                ms.status === "submitted" ? "bg-amber-500/8 text-amber-400 border border-amber-500/15" :
+                                "bg-muted/50 text-muted-foreground border border-border/40"
+                              }`}
+                            >
+                              {ms.status === "paid" || ms.status === "approved" ? <Check className="w-3 h-3" /> :
+                               ms.status === "submitted" ? <ArrowUpCircle className="w-3 h-3" /> :
+                               ms.status === "in_progress" ? <Loader2 className="w-3 h-3" /> :
+                               <Clock className="w-3 h-3" />}
+                              {ms.title}
+                            </span>
+                          ))}
+                          {contract.milestones.length > 2 && expandedContract !== contract.id && (
+                            <button
+                              onClick={() => setExpandedContract(contract.id)}
+                              className="text-[11px] font-mono text-muted-foreground hover:text-foreground transition-colors px-2"
+                            >
+                              +{contract.milestones.length - 2} more
+                            </button>
+                          )}
+                          {expandedContract === contract.id && (
+                            <button
+                              onClick={() => setExpandedContract(null)}
+                              className="text-[11px] font-mono text-muted-foreground hover:text-foreground transition-colors px-2"
+                            >
+                              show less
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="mt-4 pt-3 border-t border-border/50 flex items-center gap-2">
+                          {contract.status === "pending" && (
+                            <>
+                              <button className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-medium rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 transition-colors">
+                                <Check className="w-3.5 h-3.5" />
+                                Accept
+                              </button>
+                              <button className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-lg text-muted-foreground hover:text-foreground border border-border/40 hover:border-border transition-colors">
+                                <X className="w-3.5 h-3.5" />
+                                Decline
+                              </button>
+                            </>
+                          )}
+                          {contract.status === "active" && (
+                            <>
+                              <button className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-medium rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 transition-colors">
+                                <ArrowUpCircle className="w-3.5 h-3.5" />
+                                Submit Work
+                              </button>
+                              <button className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-lg text-muted-foreground hover:text-foreground border border-border/40 hover:border-border transition-colors">
+                                <MessageCircle className="w-3.5 h-3.5" />
+                                Message
+                              </button>
+                            </>
+                          )}
+                          {contract.status === "completed" && (
+                            <div className="flex items-center gap-2 text-xs text-green-400/70 font-mono">
+                              <Check className="w-3.5 h-3.5" />
+                              Completed {contract.completed_at ? format(new Date(contract.completed_at), "MMM d, yyyy") : ""}
+                              {contract.payment_status === "released" && (
+                                <span className="flex items-center gap-1 ml-2 text-muted-foreground">
+                                  <CircleDollarSign className="w-3.5 h-3.5" />
+                                  Payment released
+                                </span>
+                              )}
+                            </div>
+                          )}
+                          {contract.status === "disputed" && (
+                            <div className="flex items-center gap-2 text-xs text-red-400/70 font-mono">
+                              <AlertTriangle className="w-3.5 h-3.5" />
+                              Dispute active — awaiting resolution
+                              <button className="ml-2 text-muted-foreground hover:text-foreground underline underline-offset-2">
+                                View details
+                              </button>
+                            </div>
+                          )}
+                          <div className="ml-auto">
+                            <button className="inline-flex items-center gap-1 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors">
+                              <ExternalLink className="w-3.5 h-3.5" />
+                              Details
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
           {activeTab === "profile" && (
-            <div className="max-w-6xl mx-auto flex items-center justify-center h-64">
-              <p className="text-sm font-mono text-muted-foreground">{`> profile.edit — coming soon`}</p>
+            <div className="max-w-6xl mx-auto space-y-6">
+              {/* Profile Header */}
+              <div className="rounded-2xl border border-white/10 bg-card p-6 md:p-8">
+                <div className="flex flex-col md:flex-row md:items-start gap-6">
+                  <div className="relative shrink-0">
+                    <div className="w-20 h-20 rounded-full bg-gradient-primary flex items-center justify-center overflow-hidden">
+                      {profile?.avatar_url || user?.user_metadata?.avatar_url ? (
+                        <label className="w-full h-full cursor-pointer">
+                          <img src={profile?.avatar_url || user?.user_metadata?.avatar_url} alt={profile?.full_name || userName} className="w-full h-full object-cover" />
+                          {isEditing && <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-full opacity-0 hover:opacity-100 transition-opacity"><Image className="w-6 h-6 text-white" /></div>}
+                        </label>
+                      ) : (
+                        <User className="w-8 h-8 text-primary-foreground" />
+                      )}
+                    </div>
+                    {isEditing && (
+                      <button className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary border-2 border-background flex items-center justify-center hover:bg-primary/80 transition-colors">
+                        <Pencil className="w-3 h-3 text-primary-foreground" />
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    {isEditing ? (
+                      <>
+                        <input
+                          type="text"
+                          value={editForm.full_name}
+                          onChange={(e) => updateFormField("full_name", e.target.value)}
+                          placeholder="Display name"
+                          className="w-full bg-transparent border-b border-white/10 focus:border-primary outline-none font-display font-black text-2xl md:text-3xl text-foreground pb-1 mb-2"
+                        />
+                        <input
+                          type="text"
+                          value={editForm.username}
+                          onChange={(e) => updateFormField("username", e.target.value)}
+                          placeholder="username"
+                          className="w-full bg-transparent border-b border-white/10 focus:border-primary outline-none text-sm font-mono text-muted-foreground pb-1 mb-2"
+                        />
+                        <textarea
+                          value={editForm.bio}
+                          onChange={(e) => updateFormField("bio", e.target.value)}
+                          placeholder="Tell builders and founders about yourself..."
+                          rows={3}
+                          className="w-full bg-transparent border border-white/10 focus:border-primary outline-none rounded-lg text-sm text-foreground/80 p-2 mb-4 resize-none"
+                        />
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-bold text-primary uppercase tracking-wider">
+                            {profile?.role || userRole}
+                          </span>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex flex-wrap items-center gap-3 mb-2">
+                          <h1 className="font-display font-black text-2xl md:text-3xl text-foreground">
+                            {profile?.full_name || userName}
+                          </h1>
+                          {profile?.is_verified && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-bold text-primary uppercase tracking-wider">
+                              <Check className="w-3 h-3" /> Verified
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm font-mono text-muted-foreground mb-2">
+                          @{profile?.username || user?.user_metadata?.user_name || "builder"}
+                        </p>
+                        <p className="text-sm text-muted-foreground/80 mb-4 max-w-xl">
+                          {profile?.bio || "No bio yet. Dock your first project to get started."}
+                        </p>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-bold text-primary uppercase tracking-wider">
+                            {profile?.role || userRole}
+                          </span>
+                          {profile?.stack?.slice(0, 3).map((tech) => (
+                            <span key={tech} className="px-2 py-0.5 text-[10px] font-mono rounded-md bg-white/5 border border-white/10 text-muted-foreground">
+                              {tech}
+                            </span>
+                          ))}
+                          {(profile?.stack?.length || 0) > 3 && (
+                            <span className="text-[10px] font-mono text-muted-foreground/60">
+                              +{profile!.stack.length - 3} more
+                            </span>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  {!isEditing && (
+                    <button onClick={startEditing} className="self-start px-4 py-2 rounded-lg border border-white/10 bg-white/5 text-xs font-bold text-foreground hover:bg-white/10 hover:border-white/20 transition-all flex items-center gap-2 shrink-0">
+                      <Pencil className="w-3 h-3" />
+                      Edit Profile
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Stats Row */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                {[
+                  { label: "Ships Docked", value: profile?.ships_count || 0, icon: FolderGit2, color: "primary" },
+                  { label: "GitHub Stars", value: profile?.stars_count || 0, icon: Star, color: "accent" },
+                  { label: "Vibe Score", value: `${profile?.vibe_score || 0}%`, icon: Zap, color: "secondary" },
+                  { label: "Active Contracts", value: stats.activeContracts, icon: FileText, color: "primary" },
+                ].map((stat, i) => (
+                  <div key={i} className="rounded-xl border border-white/5 bg-card p-4">
+                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center mb-3 ${
+                      stat.color === "primary" ? "bg-primary/10 border border-primary/20" :
+                      stat.color === "accent" ? "bg-accent/10 border border-accent/20" :
+                      "bg-secondary/10 border border-secondary/20"
+                    }`}>
+                      <stat.icon className={`w-3.5 h-3.5 ${
+                        stat.color === "primary" ? "text-primary" :
+                        stat.color === "accent" ? "text-accent" :
+                        "text-secondary"
+                      }`} />
+                    </div>
+                    <p className="font-display font-black text-2xl text-foreground">{stat.value}</p>
+                    <p className="text-[10px] font-mono text-muted-foreground mt-0.5">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Two-column layout */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Left: Stack + Social */}
+                <div className="lg:col-span-2 space-y-6">
+                  {/* Tech Stack */}
+                  <div className="rounded-2xl border border-white/5 bg-card p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="font-display font-bold text-lg text-foreground">Tech Stack</h3>
+                      {!isEditing && (
+                        <button onClick={startEditing} className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors flex items-center gap-1">
+                          <Pencil className="w-3 h-3" /> Edit
+                        </button>
+                      )}
+                    </div>
+                    {isEditing ? (
+                      <>
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {editForm.stack.map((tech) => (
+                            <span key={tech} className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-mono rounded-lg bg-white/5 border border-white/10 text-foreground/80">
+                              {tech}
+                              <button onClick={() => removeStackTag(tech)} className="hover:text-destructive transition-colors">
+                                <X className="w-3 h-3" />
+                              </button>
+                            </span>
+                          ))}
+                        </div>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={newStackTag}
+                            onChange={(e) => setNewStackTag(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addStackTag(); } }}
+                            placeholder="Add a technology..."
+                            className="flex-1 bg-transparent border border-white/10 focus:border-primary outline-none rounded-lg text-xs font-mono text-foreground px-3 py-1.5"
+                          />
+                          <button onClick={addStackTag} disabled={!newStackTag.trim()} className="px-3 py-1.5 rounded-lg bg-primary/20 border border-primary/30 text-primary font-bold text-[10px] hover:bg-primary/30 transition-all disabled:opacity-30 flex items-center gap-1">
+                            <Plus className="w-3 h-3" /> Add
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      profile?.stack && profile.stack.length > 0 ? (
+                        <div className="flex flex-wrap gap-2">
+                          {profile.stack.map((tech) => (
+                            <span key={tech} className="px-3 py-1.5 text-xs font-mono rounded-lg bg-white/5 border border-white/10 text-foreground/80 hover:border-primary/30 hover:bg-primary/5 transition-colors">
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground/60 font-mono">{`> stack.empty — add technologies you work with`}</p>
+                      )
+                    )}
+                  </div>
+
+                  {/* Social Links */}
+                  <div className="rounded-2xl border border-white/5 bg-card p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="font-display font-bold text-lg text-foreground">Social Links</h3>
+                      {!isEditing && (
+                        <button onClick={startEditing} className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors flex items-center gap-1">
+                          <Pencil className="w-3 h-3" /> Edit
+                        </button>
+                      )}
+                    </div>
+                    {isEditing ? (
+                      <>
+                        <div className="space-y-2 mb-3">
+                          {Object.entries(editForm.social_links).map(([platform, url]) => (
+                            <div key={platform} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.02] border border-white/5">
+                              <div className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                                {platform.toLowerCase() === "github" ? <Github className="w-3.5 h-3.5 text-muted-foreground" /> : <Globe className="w-3.5 h-3.5 text-muted-foreground" />}
+                              </div>
+                              <span className="text-xs font-mono text-muted-foreground capitalize w-20 shrink-0">{platform}</span>
+                              <span className="flex-1 text-[10px] font-mono text-foreground/60 truncate">{url}</span>
+                              <button onClick={() => removeSocialLink(platform)} className="p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={newLinkPlatform}
+                            onChange={(e) => setNewLinkPlatform(e.target.value)}
+                            placeholder="Platform (github, twitter...)"
+                            className="w-28 bg-transparent border border-white/10 focus:border-primary outline-none rounded-lg text-xs font-mono text-foreground px-3 py-1.5"
+                          />
+                          <input
+                            type="text"
+                            value={newLinkUrl}
+                            onChange={(e) => setNewLinkUrl(e.target.value)}
+                            placeholder="https://..."
+                            className="flex-1 bg-transparent border border-white/10 focus:border-primary outline-none rounded-lg text-xs font-mono text-foreground px-3 py-1.5"
+                          />
+                          <button onClick={addSocialLink} disabled={!newLinkPlatform.trim() || !newLinkUrl.trim()} className="px-3 py-1.5 rounded-lg bg-primary/20 border border-primary/30 text-primary font-bold text-[10px] hover:bg-primary/30 transition-all disabled:opacity-30 flex items-center gap-1">
+                            <Plus className="w-3 h-3" /> Add
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      profile?.social_links && Object.keys(profile.social_links).length > 0 ? (
+                        <div className="space-y-2">
+                          {Object.entries(profile.social_links).map(([platform, url]) => (
+                            <a key={platform} href={url} target="_blank" rel="noreferrer" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors group">
+                              <div className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                                {platform.toLowerCase() === "github" ? <Github className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground" /> :
+                                 platform.toLowerCase() === "twitter" || platform.toLowerCase() === "x" ? <Globe className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground" /> :
+                                 <Globe className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground" />}
+                              </div>
+                              <span className="text-xs font-mono text-muted-foreground group-hover:text-foreground capitalize">{platform}</span>
+                              <span className="ml-auto text-[10px] text-muted-foreground/40 group-hover:text-primary transition-colors truncate max-w-[200px]">{url}</span>
+                            </a>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground/60 font-mono">{`> links.empty — connect your GitHub, Twitter, and more`}</p>
+                      )
+                    )}
+                  </div>
+                </div>
+
+                {/* Right: Identity */}
+                <div className="space-y-6">
+                  <div className="rounded-2xl border border-white/5 bg-card p-6">
+                    <h3 className="font-display font-bold text-lg text-foreground mb-4">Identity</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-[10px] font-mono text-muted-foreground/60 uppercase tracking-wider mb-1">Email</p>
+                        <p className="text-xs font-mono text-foreground/80 truncate">{user?.email || "—"}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-mono text-muted-foreground/60 uppercase tracking-wider mb-1">Member Since</p>
+                        <p className="text-xs font-mono text-foreground/80">
+                          {profile?.created_at ? new Date(profile.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long" }) : "—"}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-mono text-muted-foreground/60 uppercase tracking-wider mb-1">Account Type</p>
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-bold text-primary uppercase tracking-wider">
+                          {profile?.role || userRole}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-mono text-muted-foreground/60 uppercase tracking-wider mb-1">GitHub</p>
+                        <div className="flex items-center gap-2">
+                          <Github className="w-3.5 h-3.5 text-muted-foreground" />
+                          <span className="text-xs font-mono text-foreground/80">{profile?.github_username || "Not connected"}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Recent Projects */}
+                  <div className="rounded-2xl border border-white/5 bg-card p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="font-display font-bold text-lg text-foreground">Recent Ships</h3>
+                      <button onClick={() => setActiveTab("ships")} className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors">
+                        View all
+                      </button>
+                    </div>
+                    {projects.length > 0 ? (
+                      <div className="space-y-3">
+                        {projects.slice(0, 4).map((project) => (
+                          <div key={project.id} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">
+                            <div className="w-7 h-7 rounded-lg bg-primary/5 border border-primary/10 flex items-center justify-center shrink-0">
+                              <FolderGit2 className="w-3.5 h-3.5 text-primary" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-semibold text-foreground truncate">{project.title}</p>
+                              <p className="text-[10px] font-mono text-muted-foreground">{project.status}</p>
+                            </div>
+                            <ExternalLink className="w-3 h-3 text-muted-foreground/40" />
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground/60 font-mono">{`> projects.empty — dock your first ship`}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Save/Cancel bar */}
+              {isEditing && (
+                <div className="sticky bottom-0 flex items-center justify-end gap-3 p-4 bg-background/80 backdrop-blur-xl border-t border-white/5 rounded-b-2xl">
+                  <button onClick={cancelEditing} disabled={saving} className="px-4 py-2 rounded-lg border border-white/10 bg-white/5 text-xs font-bold text-muted-foreground hover:text-foreground hover:bg-white/10 transition-all disabled:opacity-50">
+                    Cancel
+                  </button>
+                  <button onClick={handleSave} disabled={saving} className="px-5 py-2 rounded-lg bg-gradient-primary text-primary-foreground font-bold text-xs glow-cyan hover:brightness-110 transition-all disabled:opacity-50 flex items-center gap-2">
+                    {saving ? <Loader className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
+                    {saving ? "Saving..." : "Save Changes"}
+                  </button>
+                </div>
+              )}
             </div>
           )}
           {activeTab === "settings" && (
-            <div className="max-w-6xl mx-auto flex items-center justify-center h-64">
-              <p className="text-sm font-mono text-muted-foreground">{`> settings — coming soon`}</p>
+            <div className="max-w-6xl mx-auto space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-foreground">Settings</h2>
+              </div>
+
+              <div className="rounded-xl border border-border bg-card p-6">
+                <h3 className="font-display font-bold text-foreground mb-1">Notifications</h3>
+                <p className="text-xs text-muted-foreground font-mono mb-4">Control what updates you receive</p>
+                <div className="space-y-3">
+                  {[
+                    { key: "email", label: "Email notifications", desc: "Get email alerts for messages, contract updates, and reviews" },
+                    { key: "inApp", label: "In-app notifications", desc: "Show notification badges and alerts inside the dashboard" },
+                    { key: "marketing", label: "Marketing & updates", desc: "Product updates, feature announcements, and tips" },
+                  ].map((n) => (
+                    <div key={n.key} className="flex items-center justify-between py-2">
+                      <div>
+                        <p className="text-sm text-foreground">{n.label}</p>
+                        <p className="text-[11px] text-muted-foreground font-mono">{n.desc}</p>
+                      </div>
+                      <button
+                        onClick={() => setNotifPrefs((p) => ({ ...p, [n.key]: !(p as Record<string, boolean>)[n.key] }))}
+                        className={`relative w-10 h-5 rounded-full transition-colors ${
+                          (notifPrefs as Record<string, boolean>)[n.key] ? "bg-cyan-500" : "bg-muted"
+                        }`}
+                      >
+                        <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${
+                          (notifPrefs as Record<string, boolean>)[n.key] ? "translate-x-5" : "translate-x-0.5"
+                        }`} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-border bg-card p-6">
+                <h3 className="font-display font-bold text-foreground mb-1">Appearance</h3>
+                <p className="text-xs text-muted-foreground font-mono mb-4">Customize your dashboard theme</p>
+                <div className="flex gap-3">
+                  {[
+                    { mode: "dark" as const, icon: Moon, label: "Dark" },
+                    { mode: "light" as const, icon: Sun, label: "Light" },
+                    { mode: "system" as const, icon: Monitor, label: "System" },
+                  ].map((t) => (
+                    <button
+                      key={t.mode}
+                      onClick={() => setTheme(t.mode)}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-xs font-mono transition-colors ${
+                        theme === t.mode
+                          ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
+                          : "bg-transparent border-border/40 text-muted-foreground hover:border-border"
+                      }`}
+                    >
+                      <t.icon className="w-3.5 h-3.5" />
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-border bg-card p-6">
+                <h3 className="font-display font-bold text-foreground mb-1">Account</h3>
+                <p className="text-xs text-muted-foreground font-mono mb-4">Your account information</p>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between py-2">
+                    <p className="text-sm text-foreground">Email</p>
+                    <p className="text-xs font-mono text-muted-foreground">{user?.email || "—"}</p>
+                  </div>
+                  <div className="flex items-center justify-between py-2">
+                    <p className="text-sm text-foreground">Member since</p>
+                    <p className="text-xs font-mono text-muted-foreground">
+                      {profile?.created_at ? format(new Date(profile.created_at), "MMMM yyyy") : "—"}
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between py-2 border-t border-border/50">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-foreground">Sign out</span>
+                      <span className="text-[10px] font-mono text-muted-foreground/60">end current session</span>
+                    </div>
+                    <button
+                      onClick={() => signOut()}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-lg border border-border/40 text-muted-foreground hover:text-foreground hover:border-border transition-colors"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-6">
+                <h3 className="font-display font-bold text-red-400 mb-1">Danger Zone</h3>
+                <p className="text-xs text-muted-foreground font-mono mb-4">Irreversible actions</p>
+                <div className="space-y-3">
+                  <p className="text-xs text-muted-foreground">
+                    Deleting your account removes all your data including projects, contracts, and profile. This cannot be undone.
+                  </p>
+                  {deleteConfirm !== "CONFIRM" ? (
+                    <button
+                      onClick={() => setDeleteConfirm("CONFIRM")}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-medium rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Delete Account
+                    </button>
+                  ) : (
+                    <div className="space-y-2">
+                      <p className="text-xs font-mono text-red-400/80">Type CONFIRM to delete your account:</p>
+                      <div className="flex gap-2">
+                        <input
+                          value={deleteConfirm}
+                          onChange={(e) => setDeleteConfirm(e.target.value)}
+                          placeholder="type CONFIRM..."
+                          className="flex-1 bg-transparent border border-border/40 rounded-lg px-3 py-1.5 text-xs font-mono text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-red-500/40"
+                        />
+                        <button className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors disabled:opacity-40">
+                          Delete
+                        </button>
+                        <button
+                          onClick={() => setDeleteConfirm("")}
+                          className="px-3 py-1.5 text-xs font-mono rounded-lg text-muted-foreground border border-border/40 hover:text-foreground transition-colors"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           )}
         </main>

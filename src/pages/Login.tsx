@@ -20,11 +20,14 @@ const Login = () => {
     "> tls.handshake() · OK",
     "> awaiting authentication...",
   ]);
+  const logContainerRef = useRef<HTMLDivElement>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
   const { signInWithGithub, signInWithGoogle } = useAuth();
 
   useEffect(() => {
-    logEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (logContainerRef.current) {
+      logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
+    }
   }, [logLines]);
 
   const addLog = (line: string) => {
@@ -154,7 +157,7 @@ const Login = () => {
           </div>
 
           {/* Terminal log area */}
-          <div className="px-5 pt-4 pb-2 bg-[#0b0f17] max-h-28 overflow-y-auto border-b border-white/5">
+          <div ref={logContainerRef} className="px-5 pt-4 pb-2 bg-[#0b0f17] max-h-28 overflow-y-auto border-b border-white/5">
             {logLines.map((line, i) => (
               <p
                 key={i}

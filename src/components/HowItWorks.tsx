@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Upload, Search, Handshake, Code2, Users, FileSignature, ArrowRight } from "lucide-react";
+import { Upload, Search, Handshake, ArrowRight } from "lucide-react";
 import { BlurFade } from "@/components/magicui/blur-fade";
 
 const steps = [
@@ -87,7 +87,7 @@ const HowItWorks = () => {
                 key={step.step} 
                 className="relative"
                 onMouseEnter={() => setHoveredIdx(i)}
-                onMouseLeave={() => setHoveredIdx(i)}
+                onMouseLeave={() => setHoveredIdx(null)}
               >
                 {/* Connecting SVG wires on desktop */}
                 {i < steps.length - 1 && (

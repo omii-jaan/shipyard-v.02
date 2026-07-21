@@ -112,9 +112,25 @@ const Navbar = () => {
                 <div className="px-4 pb-2 border-b border-white/10">
                   <p className="text-xs font-bold text-foreground">Notifications</p>
                 </div>
-                <div className="py-6 text-center">
-                  <Bell className="w-8 h-8 mx-auto text-muted-foreground/30 mb-2" />
-                  <p className="text-xs text-muted-foreground">No new notifications</p>
+                <div className="max-h-80 overflow-y-auto">
+                  {[
+                    { icon: User, text: "New builder matched: Arjun Mehta (98% vibe)", time: "2m ago", color: "text-primary" },
+                    { icon: FolderGit2, text: "AI Dashboard Integration milestone approved", time: "1h ago", color: "text-accent" },
+                    { icon: Star, text: "Project starred: Multi-Agent Pipeline", time: "3h ago", color: "text-secondary" },
+                  ].map((n, i) => (
+                    <div key={i} className="flex items-start gap-3 px-4 py-3 hover:bg-white/5 transition-colors cursor-pointer">
+                      <div className={`w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0 ${n.color}`}>
+                        <n.icon className="w-3.5 h-3.5" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs text-foreground leading-relaxed">{n.text}</p>
+                        <p className="text-[10px] font-mono text-muted-foreground mt-0.5">{n.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="border-t border-white/10 px-4 py-2">
+                  <button className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors">View all notifications</button>
                 </div>
               </div>
             )}
@@ -165,14 +181,14 @@ const Navbar = () => {
                     Dashboard
                   </Link>
                   <Link
-                    to="#"
+                    to="/dashboard"
                     onClick={() => setUserMenuOpen(false)}
                     className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-primary/10">
                     <FolderGit2 className="w-4 h-4 text-secondary" />
                     My Ships
                   </Link>
                   <Link
-                    to="#"
+                    to="/dashboard"
                     onClick={() => setUserMenuOpen(false)}
                     className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-primary/10">
                     <User className="w-4 h-4 text-accent" />
@@ -385,20 +401,20 @@ const Navbar = () => {
             </div>
             <div className="py-2 max-h-64 overflow-y-auto">
               <div className="px-4 py-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Navigate</div>
-              <button onClick={() => { setCmdOpen(false); }} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 transition-colors">
+              <button onClick={() => { setCmdOpen(false); navigate("/dashboard"); }} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 transition-colors">
                 <LayoutDashboard className="w-4 h-4 text-primary" />
                 <span>Dashboard</span>
               </button>
-              <button onClick={() => { setCmdOpen(false); }} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 transition-colors">
+              <button onClick={() => { setCmdOpen(false); navigate("/dashboard"); }} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 transition-colors">
                 <User className="w-4 h-4 text-secondary" />
                 <span>Profile</span>
               </button>
-              <button onClick={() => { setCmdOpen(false); }} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 transition-colors">
+              <button onClick={() => { setCmdOpen(false); navigate("/dashboard"); }} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 transition-colors">
                 <FolderGit2 className="w-4 h-4 text-accent" />
                 <span>My Ships</span>
               </button>
               <div className="px-4 py-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-1 border-t border-white/5">Pages</div>
-              <button onClick={() => { setCmdOpen(false); }} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 transition-colors">
+              <button onClick={() => { setCmdOpen(false); navigate("/"); }} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 transition-colors">
                 <Zap className="w-4 h-4 text-primary" />
                 <span>Landing</span>
               </button>

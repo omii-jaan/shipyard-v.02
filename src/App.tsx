@@ -11,6 +11,8 @@ import Index from "./pages/Index.tsx";
 import Login from "./pages/Login.tsx";
 import AuthCallback from "./pages/AuthCallback.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
+import ProfilePreview from "./pages/ProfilePreview.tsx";
+import BuilderProfile from "./pages/BuilderProfile.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -31,6 +33,8 @@ const AppRoutes = () => {
       <Route path="/" element={<Index />} />
       <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <Login />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
+      <Route path="/profile-preview" element={<ProfilePreview />} />
+      <Route path="/builder/:username" element={<BuilderProfile />} />
       <Route
         path="/dashboard"
         element={

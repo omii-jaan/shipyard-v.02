@@ -1,4 +1,5 @@
 import { ExternalLink, Star, Code2, ShieldCheck } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useCardGlow } from "@/hooks/useCardGlow";
 
 export interface Builder {
@@ -80,14 +81,18 @@ const BuilderCard = ({ builder }: { builder: Builder }) => {
               className="w-12 h-12 rounded-full border border-white/20 object-cover relative z-10 bg-muted"
             />
             {/* Status dot */}
-            <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-accent border-2 border-[#090b11] z-20 animate-pulse" />
+            <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-accent border-2 border-background z-20 animate-pulse" />
           </div>
           <div>
             <div className="flex items-center gap-1">
-              <h3 className="font-semibold text-foreground text-sm leading-none">{builder.name}</h3>
+              <Link to={`/builder/${builder.handle.replace("@", "")}`} className="font-semibold text-foreground text-sm leading-none hover:text-primary transition-colors">
+                {builder.name}
+              </Link>
               <ShieldCheck className="w-3.5 h-3.5 text-primary" />
             </div>
-            <p className="text-muted-foreground text-xs mt-1">{builder.handle}</p>
+            <Link to={`/builder/${builder.handle.replace("@", "")}`} className="text-muted-foreground text-xs mt-1 hover:text-primary/80 transition-colors block">
+              {builder.handle}
+            </Link>
           </div>
         </div>
         

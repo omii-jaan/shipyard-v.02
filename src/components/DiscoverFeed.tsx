@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Search, Cpu, UserCheck, ShieldCheck, Star, Code2, ArrowRight, Activity, Zap } from "lucide-react";
+import { Cpu, UserCheck, ShieldCheck, Star, Code2, ArrowRight, Activity, Zap } from "lucide-react";
+import { Link } from "react-router-dom";
 import { BlurFade } from "@/components/magicui/blur-fade";
 
 interface MatchedBuilder {
@@ -141,10 +142,10 @@ const DiscoverFeed = () => {
             </div>
 
             <div className="mt-8 pt-4 border-t border-white/5">
-              <button className="w-full py-3.5 rounded-full bg-gradient-primary text-primary-foreground font-bold text-xs glow-cyan transition-all hover:scale-102 flex items-center justify-center gap-2">
+              <Link to="/login" className="w-full py-3.5 rounded-full bg-gradient-primary text-primary-foreground font-bold text-xs glow-cyan transition-all hover:scale-[1.02] flex items-center justify-center gap-2">
                 Launch Custom Match Request
                 <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -196,7 +197,7 @@ const DiscoverFeed = () => {
               </div>
             ) : (
               // Matched builder display
-              <div className="w-full h-full rounded-3xl border border-primary/20 bg-gradient-to-br from-card to-card/65 p-6 backdrop-blur-md shadow-3xl flex flex-col justify-between animate-in fade-in zoom-in-95 duration-300">
+              <div className="w-full h-full rounded-3xl border border-primary/20 bg-gradient-to-br from-card to-card/65 p-6 backdrop-blur-md shadow-2xl flex flex-col justify-between animate-in fade-in zoom-in-95 duration-300">
                 <div>
                   {/* Match Header */}
                   <div className="flex justify-between items-center mb-6">
@@ -257,9 +258,9 @@ const DiscoverFeed = () => {
                     <span className="flex items-center gap-1.5"><Star className="w-3.5 h-3.5 text-primary" /> {matchedBuilder.stars}</span>
                     <span className="flex items-center gap-1.5"><Code2 className="w-3.5 h-3.5 text-secondary" /> {matchedBuilder.projects} shipped</span>
                   </div>
-                  <button className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-xs transition-all active:scale-95">
+                  <Link to="/login" className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-xs transition-all active:scale-95 inline-block">
                     Open Contract
-                  </button>
+                  </Link>
                 </div>
               </div>
             )}

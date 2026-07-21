@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import type { ContractMilestone } from "@/types";
 
 export const profileApi = {
   async getCurrent() {
@@ -230,7 +231,7 @@ export const contractApi = {
     title: string;
     description?: string;
     amount_usd: number;
-    milestones: any[];
+    milestones: ContractMilestone[];
     deadline?: string;
   }) {
     const { data: { user } } = await supabase.auth.getUser();
@@ -249,7 +250,7 @@ export const contractApi = {
   async update(id: string, updates: Partial<{
     status: "pending" | "active" | "completed" | "cancelled" | "disputed";
     payment_status: "unpaid" | "escrowed" | "released" | "refunded";
-    milestones: any[];
+    milestones: ContractMilestone[];
   }>) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, type FormEvent } from "react";
+import { Link } from "react-router-dom";
 import heroBg from "@/assets/hero-bg.jpg";
 import { ArrowRight, Sparkles, Users, Rocket, Terminal, RefreshCw, Send } from "lucide-react";
 import { NumberTicker } from "@/components/magicui/number-ticker";
@@ -64,12 +65,15 @@ const HeroSection = () => {
   const [visibleLogs, setVisibleLogs] = useState<string[]>([]);
   const [state, setState] = useState<"idle" | "running" | "done">("done");
   const inputRef = useRef<HTMLInputElement>(null);
+  const logContainerRef = useRef<HTMLDivElement>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    logEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (logContainerRef.current) {
+      logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
+    }
   }, [visibleLogs]);
 
   const runSimulation = useCallback((prompt: string) => {
@@ -161,13 +165,13 @@ const HeroSection = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-12">
-              <button className="group flex items-center justify-center gap-2.5 px-8 py-4 rounded-full bg-gradient-primary text-primary-foreground font-bold text-base glow-cyan hover:brightness-110 hover:scale-[1.02] transition-all duration-200">
+              <Link to="/login" className="group flex items-center justify-center gap-2.5 px-8 py-4 rounded-full bg-gradient-primary text-primary-foreground font-bold text-base glow-cyan hover:brightness-110 hover:scale-[1.02] transition-all duration-200">
                 Dock Your Project
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-              <button className="flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-white/10 bg-white/5 text-white font-bold text-base hover:bg-white/10 hover:border-white/20 transition-all duration-200">
+              </Link>
+              <a href="/#discover" className="flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-white/10 bg-white/5 text-white font-bold text-base hover:bg-white/10 hover:border-white/20 transition-all duration-200">
                 Hire Vibe Builders
-              </button>
+              </a>
             </div>
 
             <div className="grid grid-cols-3 gap-6 pt-6 border-t border-white/5 w-full">
@@ -185,7 +189,7 @@ const HeroSection = () => {
 
           {/* Right Column: Interactive Terminal */}
           <div className="lg:col-span-6 w-full flex flex-col">
-            <div className="relative w-full rounded-2xl border border-white/15 bg-card/40 backdrop-blur-2xl shadow-3xl overflow-hidden">
+            <div className="relative w-full rounded-2xl border border-white/15 bg-card/40 backdrop-blur-2xl shadow-2xl overflow-hidden">
               
               {/* Terminal Header */}
               <div className="flex items-center justify-between px-4 py-3 bg-white/[0.02] border-b border-white/10">
@@ -234,7 +238,7 @@ const HeroSection = () => {
                 </div>
 
                 {/* Logs */}
-                <div className="flex-1 space-y-1 max-h-[160px] overflow-y-auto">
+                <div ref={logContainerRef} className="flex-1 space-y-1 max-h-[160px] overflow-y-auto">
                   {visibleLogs.map((log, i) => (
                     <div key={i} className="flex gap-2 items-start">
                       <span className="text-white/20 shrink-0 w-4 text-right select-none">{i + 1}</span>
