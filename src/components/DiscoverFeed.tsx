@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Search, Cpu, UserCheck, ShieldCheck, Star, Code2, ArrowRight, Activity, Zap } from "lucide-react";
+import { BlurFade } from "@/components/magicui/blur-fade";
 
 interface MatchedBuilder {
   name: string;
@@ -82,18 +83,21 @@ const DiscoverFeed = () => {
       <div className="container max-w-6xl mx-auto relative z-10">
         
         {/* Title Block */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <p className="text-secondary text-sm font-semibold uppercase tracking-widest mb-3">AI Matching Core</p>
-          <h2 className="font-display font-black text-3xl md:text-5xl text-white mb-4">
-            Meet the Match Engine
-          </h2>
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            Skip the recruiter spam. Type what you need, let our semantic parser evaluate thousands of live repositories, and view developers with verified proof of work.
-          </p>
-        </div>
+        <BlurFade delay={0.1} direction="up">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <p className="text-secondary text-sm font-semibold uppercase tracking-widest mb-3">AI Matching Core</p>
+            <h2 className="font-display font-black text-3xl md:text-5xl text-white mb-4">
+              Meet the Match Engine
+            </h2>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              Skip the recruiter spam. Type what you need, let our semantic parser evaluate thousands of live repositories, and view developers with verified proof of work.
+            </p>
+          </div>
+        </BlurFade>
 
         {/* Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <BlurFade delay={0.2} direction="up">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
           {/* Left Column: Match Controls (4 cols) */}
           <div className="lg:col-span-5 flex flex-col justify-between rounded-3xl border border-white/5 bg-card/40 p-6 backdrop-blur-md">
@@ -262,6 +266,7 @@ const DiscoverFeed = () => {
           </div>
           
         </div>
+        </BlurFade>
       </div>
     </section>
   );

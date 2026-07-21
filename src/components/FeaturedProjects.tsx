@@ -1,4 +1,5 @@
 import ProjectCard, { Project } from "./ProjectCard";
+import { BlurFade } from "@/components/magicui/blur-fade";
 
 const projects: Project[] = [
   {
@@ -87,25 +88,29 @@ const FeaturedProjects = () => {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_50%,hsl(270_60%_62%_/_0.05),transparent)]" />
       <div className="container max-w-6xl mx-auto relative z-10">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
-          <div>
-            <p className="text-secondary text-sm font-semibold uppercase tracking-widest mb-2">Live Builds</p>
-            <h2 className="font-display font-bold text-3xl md:text-4xl text-foreground">
-              Products that ship. <br />
-              <span className="gradient-text-purple">Not side-projects.</span>
-            </h2>
+        <BlurFade delay={0.1} direction="up">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+            <div>
+              <p className="text-secondary text-sm font-semibold uppercase tracking-widest mb-2">Live Builds</p>
+              <h2 className="font-display font-bold text-3xl md:text-4xl text-foreground">
+                Products that ship. <br />
+                <span className="gradient-text-purple">Not side-projects.</span>
+              </h2>
+            </div>
+            <button className="text-sm font-medium text-muted-foreground hover:text-secondary transition-colors flex items-center gap-1 self-start md:self-auto">
+              Browse all projects →
+            </button>
           </div>
-          <button className="text-sm font-medium text-muted-foreground hover:text-secondary transition-colors flex items-center gap-1 self-start md:self-auto">
-            Browse all projects →
-          </button>
-        </div>
+        </BlurFade>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
-        </div>
+        <BlurFade delay={0.2} direction="up">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {projects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
+          </div>
+        </BlurFade>
       </div>
     </section>
   );

@@ -1,4 +1,5 @@
 import { ArrowRight, Zap, Terminal, Compass } from "lucide-react";
+import { BlurFade } from "@/components/magicui/blur-fade";
 
 const CTASection = () => {
   return (
@@ -9,18 +10,21 @@ const CTASection = () => {
       <div className="container max-w-5xl mx-auto relative z-10">
         
         {/* Core Header */}
-        <div className="text-center mb-16 max-w-2xl mx-auto">
-          <h2 className="font-display font-black text-3xl md:text-5xl text-white mb-4 leading-tight">
-            Ready to change how <br />
-            <span className="gradient-text-cyan text-glow-cyan">software is built & hired?</span>
-          </h2>
-          <p className="text-muted-foreground text-sm">
-            Whether you are a developer shipping agentic architectures or a founder building the future, we have a port docked for you.
-          </p>
-        </div>
+        <BlurFade delay={0.1} direction="up">
+          <div className="text-center mb-16 max-w-2xl mx-auto">
+            <h2 className="font-display font-black text-3xl md:text-5xl text-white mb-4 leading-tight">
+              Ready to change how <br />
+              <span className="gradient-text-cyan text-glow-cyan">software is built & hired?</span>
+            </h2>
+            <p className="text-muted-foreground text-sm">
+              Whether you are a developer shipping agentic architectures or a founder building the future, we have a port docked for you.
+            </p>
+          </div>
+        </BlurFade>
 
         {/* Dual Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <BlurFade delay={0.2} direction="up">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           {/* Card 1: For Builders */}
           <div className="relative rounded-3xl p-8 md:p-10 border border-primary/20 bg-gradient-to-br from-primary/5 via-card/80 to-card/40 group hover:shadow-[0_0_30px_rgba(183,100,50,0.1)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
@@ -109,6 +113,7 @@ const CTASection = () => {
           </div>
 
         </div>
+        </BlurFade>
 
       </div>
     </section>

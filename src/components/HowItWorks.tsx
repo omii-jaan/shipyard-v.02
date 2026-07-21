@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Upload, Search, Handshake, Code2, Users, FileSignature, ArrowRight } from "lucide-react";
+import { BlurFade } from "@/components/magicui/blur-fade";
 
 const steps = [
   {
@@ -63,16 +64,19 @@ const HowItWorks = () => {
       <div className="container max-w-6xl mx-auto relative z-10">
         
         {/* Header */}
-        <div className="text-center mb-20">
-          <p className="text-accent text-sm font-semibold uppercase tracking-widest mb-3">Shipyard Assembly Line</p>
-          <h2 className="font-display font-black text-4xl md:text-5xl text-white">
-            Three steps to go from <br />
-            <span className="gradient-text-cyan text-glow-cyan">builder to hired.</span>
-          </h2>
-        </div>
+        <BlurFade delay={0.1} direction="up">
+          <div className="text-center mb-20">
+            <p className="text-accent text-sm font-semibold uppercase tracking-widest mb-3">Shipyard Assembly Line</p>
+            <h2 className="font-display font-black text-4xl md:text-5xl text-white">
+              Three steps to go from <br />
+              <span className="gradient-text-cyan text-glow-cyan">builder to hired.</span>
+            </h2>
+          </div>
+        </BlurFade>
 
         {/* Steps Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative items-start">
+        <BlurFade delay={0.2} direction="up">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative items-start">
           {steps.map((step, i) => {
             const colors = colorMap[step.color];
             const Icon = step.icon;
@@ -191,6 +195,7 @@ const HowItWorks = () => {
             )}
           </div>
         </div>
+        </BlurFade>
 
       </div>
     </section>

@@ -1,4 +1,5 @@
 import { Marquee } from "@/components/magicui/marquee";
+import { BlurFade } from "@/components/magicui/blur-fade";
 
 const tools = [
   { name: "OpenAI", gradient: "from-emerald-400 to-cyan-400" },
@@ -17,12 +18,15 @@ const MarqueeSection = () => {
   return (
     <section className="py-16 px-6 relative overflow-hidden">
       <div className="container max-w-6xl mx-auto">
-        <div className="text-center mb-8">
-          <p className="text-muted-foreground text-xs font-semibold uppercase tracking-widest">
-            Trusted by builders using
-          </p>
-        </div>
-        <Marquee pauseOnHover repeat={3} className="[--duration:30s]">
+        <BlurFade delay={0.1} direction="up">
+          <div className="text-center mb-8">
+            <p className="text-muted-foreground text-xs font-semibold uppercase tracking-widest">
+              Trusted by builders using
+            </p>
+          </div>
+        </BlurFade>
+        <BlurFade delay={0.2} direction="up">
+          <Marquee pauseOnHover repeat={3} className="[--duration:30s]">
           {tools.map((tool) => (
             <div
               key={tool.name}
@@ -34,6 +38,7 @@ const MarqueeSection = () => {
             </div>
           ))}
         </Marquee>
+        </BlurFade>
       </div>
     </section>
   );

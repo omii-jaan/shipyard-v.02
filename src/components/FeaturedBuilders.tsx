@@ -1,4 +1,5 @@
 import BuilderCard, { Builder } from "./BuilderCard";
+import { BlurFade } from "@/components/magicui/blur-fade";
 
 const builders: Builder[] = [
   {
@@ -80,25 +81,29 @@ const FeaturedBuilders = () => {
     <section id="builders" className="py-24 px-6">
       <div className="container max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
-          <div>
-            <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-2">Docked at Shipyard</p>
-            <h2 className="font-display font-bold text-3xl md:text-4xl text-foreground">
-              Proof over resumes. <br />
-              <span className="gradient-text-cyan">Real ships, real builders.</span>
-            </h2>
+        <BlurFade delay={0.1} direction="up">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+            <div>
+              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-2">Docked at Shipyard</p>
+              <h2 className="font-display font-bold text-3xl md:text-4xl text-foreground">
+                Proof over resumes. <br />
+                <span className="gradient-text-cyan">Real ships, real builders.</span>
+              </h2>
+            </div>
+            <button className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 self-start md:self-auto">
+              View all builders →
+            </button>
           </div>
-          <button className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 self-start md:self-auto">
-            View all builders →
-          </button>
-        </div>
+        </BlurFade>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {builders.map((builder) => (
-            <BuilderCard key={builder.id} builder={builder} />
-          ))}
-        </div>
+        <BlurFade delay={0.2} direction="up">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {builders.map((builder) => (
+              <BuilderCard key={builder.id} builder={builder} />
+            ))}
+          </div>
+        </BlurFade>
       </div>
     </section>
   );
