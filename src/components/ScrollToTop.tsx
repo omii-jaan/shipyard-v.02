@@ -8,5 +8,12 @@ export default function ScrollToTop() {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  useEffect(() => {
+    const scrollToTop = () => window.scrollTo(0, 0);
+    scrollToTop();
+    requestAnimationFrame(scrollToTop);
+    setTimeout(scrollToTop, 50);
+  }, []);
+
   return null;
 }
