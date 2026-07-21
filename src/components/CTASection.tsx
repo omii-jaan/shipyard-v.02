@@ -4,7 +4,7 @@ import { BlurFade } from "@/components/magicui/blur-fade";
 
 const CTASection = () => {
   return (
-    <section className="py-28 px-6 relative overflow-hidden">
+    <section id="hire" className="py-28 px-6 relative overflow-hidden">
       {/* Glow dividers */}
       <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
 
