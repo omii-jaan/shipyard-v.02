@@ -85,13 +85,16 @@ const HeroSection = () => {
 
     timeoutRef.current = setTimeout(() => {
       intervalRef.current = setInterval(() => {
-        if (idx < logs.length) {
-          setVisibleLogs((prev) => [...prev, logs[idx]]);
-          idx++;
-        } else {
+        if (!logs || idx >= logs.length) {
           if (intervalRef.current) clearInterval(intervalRef.current);
           setState("done");
+          return;
         }
+        const line = logs[idx];
+        if (line != null) {
+          setVisibleLogs((prev) => [...prev, line]);
+        }
+        idx++;
       }, simMs / logs.length);
     }, 400);
   }, []);
@@ -235,7 +238,7 @@ const HeroSection = () => {
                   {visibleLogs.map((log, i) => (
                     <div key={i} className="flex gap-2 items-start">
                       <span className="text-white/20 shrink-0 w-4 text-right select-none">{i + 1}</span>
-                      <span className={log.includes("Vite") || log.includes("http://localhost") ? "text-accent font-bold" : "text-white/70"}>
+                      <span className={log?.includes?.("Vite") || log?.includes?.("http://localhost") ? "text-accent font-bold" : "text-white/70"}>
                         {log}
                       </span>
                     </div>
