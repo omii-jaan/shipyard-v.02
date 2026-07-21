@@ -1,4 +1,5 @@
 import { ExternalLink, Star, Briefcase, Code2, ShieldCheck } from "lucide-react";
+import { useCardGlow } from "@/hooks/useCardGlow";
 
 export interface Builder {
   id: number;
@@ -18,27 +19,45 @@ const badgeStyles = {
     badge: "bg-primary/10 text-primary border-primary/20",
     glow: "group-hover:shadow-[0_0_30px_rgba(183,100,50,0.15)] group-hover:border-primary/40",
     stamp: "text-primary/5",
+    spotlight: "rgba(183,100,50,0.07)",
   },
   purple: {
     badge: "bg-secondary/10 text-secondary border-secondary/20",
     glow: "group-hover:shadow-[0_0_30px_rgba(168,85,247,0.15)] group-hover:border-secondary/40",
     stamp: "text-secondary/5",
+    spotlight: "rgba(168,85,247,0.07)",
   },
   green: {
     badge: "bg-accent/10 text-accent border-accent/20",
     glow: "group-hover:shadow-[0_0_30px_rgba(142,76,55,0.15)] group-hover:border-accent/40",
     stamp: "text-accent/5",
+    spotlight: "rgba(142,76,55,0.07)",
   },
 };
 
 const BuilderCard = ({ builder }: { builder: Builder }) => {
   const styles = badgeStyles[builder.badgeColor];
+  const { ref, handleMouseMove, handleMouseLeave } = useCardGlow();
 
-  // Generate a random array of 12 numbers representing contribution commits
   const commitActivity = Array.from({ length: 14 }, (_, i) => Math.floor(Math.sin(i + builder.id) * 3) + 2);
 
   return (
-    <div className={`relative rounded-3xl p-6 bg-gradient-to-br from-card/80 to-card/40 border border-white/5 group cursor-pointer transition-all duration-300 hover:-translate-y-1.5 overflow-hidden backdrop-blur-md ${styles.glow}`}>
+    <div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className={`relative rounded-3xl p-6 bg-gradient-to-br from-card/80 to-card/40 border border-white/5 group cursor-pointer transition-all duration-300 hover:-translate-y-1.5 overflow-hidden backdrop-blur-md ${styles.glow}`}
+      style={{ "--glow-x": "-9999px", "--glow-y": "-9999px" } as React.CSSProperties}
+    >
+      {/* Mouse-following glow overlay */}
+      <div
+        className="absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-[inherit]"
+        style={{
+          background: `radial-gradient(200px circle at var(--glow-x) var(--glow-y), ${styles.spotlight}, transparent 70%)`,
+        }}
+      />
+
+      {/* Hologram stamp background */}
       
       {/* Hologram stamp background */}
       <div className={`absolute -right-8 -top-8 w-28 h-28 pointer-events-none opacity-20 ${styles.stamp} transition-transform duration-700 group-hover:rotate-45`}>

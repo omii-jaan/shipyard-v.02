@@ -1,4 +1,5 @@
 import { ExternalLink, Rocket, Eye } from "lucide-react";
+import { useCardGlow } from "@/hooks/useCardGlow";
 
 export interface Project {
   id: number;
@@ -21,9 +22,32 @@ const categoryStyles = {
   orange: "bg-orange-500/10 text-orange-400 border-orange-500/20",
 };
 
+const spotlightColors: Record<string, string> = {
+  cyan: "rgba(183,100,50,0.07)",
+  purple: "rgba(168,85,247,0.07)",
+  green: "rgba(142,76,55,0.07)",
+  orange: "rgba(249,115,22,0.07)",
+};
+
 const ProjectCard = ({ project }: { project: Project }) => {
+  const { ref, handleMouseMove, handleMouseLeave } = useCardGlow();
+
   return (
-    <div className={`relative card-shine rounded-2xl p-5 group cursor-pointer transition-all duration-300 hover:-translate-y-1 ${project.featured ? "border-primary/25 glow-cyan" : ""}`}>
+    <div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className={`relative card-shine rounded-2xl p-5 group cursor-pointer transition-all duration-300 hover:-translate-y-1 overflow-hidden ${project.featured ? "border-primary/25 glow-cyan" : ""}`}
+      style={{ "--glow-x": "-9999px", "--glow-y": "-9999px" } as React.CSSProperties}
+    >
+      {/* Mouse-following glow overlay */}
+      <div
+        className="absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-[inherit]"
+        style={{
+          background: `radial-gradient(200px circle at var(--glow-x) var(--glow-y), ${spotlightColors[project.categoryColor] || spotlightColors.cyan}, transparent 70%)`,
+        }}
+      />
+
       {project.featured && (
         <div className="absolute -top-2.5 left-4">
           <span className="px-2.5 py-0.5 text-xs font-bold rounded-full bg-gradient-primary text-primary-foreground">
