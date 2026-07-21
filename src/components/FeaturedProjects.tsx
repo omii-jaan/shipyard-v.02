@@ -104,7 +104,7 @@ const FeaturedProjects = () => {
                 <span className="gradient-text-purple">Not side-projects.</span>
               </h2>
             </div>
-            <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-secondary transition-colors flex items-center gap-1 self-start md:self-auto">
+            <Link to="/projects" className="text-sm font-medium text-muted-foreground hover:text-secondary transition-colors flex items-center gap-1 self-start md:self-auto">
               Browse all projects →
             </Link>
           </div>

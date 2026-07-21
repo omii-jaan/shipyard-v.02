@@ -68,7 +68,7 @@ export const profileApi = {
     const fileName = `${user.id}/avatar.${fileExt}`;
 
     const { error: uploadError } = await supabase.storage
-      .from("avatars")
+      .from("avatar")
       .upload(fileName, file, { upsert: true });
 
     if (uploadError) throw uploadError;
