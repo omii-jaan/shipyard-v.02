@@ -5,7 +5,8 @@ import { profileApi, projectApi } from "@/lib/api";
 import { format } from "date-fns";
 import {
   Bell, LayoutDashboard, FolderGit2, FileText, User, Settings,
-  LogOut, Plus, ExternalLink, Loader2, ChevronRight, Search, Zap
+  LogOut, Plus, ExternalLink, Loader2, ChevronRight, Search, Zap,
+  List, Grid3X3, Trash2, Eye, Star
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -34,6 +35,11 @@ const Dashboard = () => {
     vibeScore: 0,
     earnings: 0,
   });
+
+  const [shipView, setShipView] = useState<"grid" | "list">("grid");
+  const [shipSearch, setShipSearch] = useState("");
+  const [shipStatus, setShipStatus] = useState("all");
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   const activityFeed = [
     { time: "2m ago", event: "> project.dock()", detail: "AI Chatbot deployed to production", status: "success" },
@@ -376,10 +382,238 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* Placeholder tabs */}
+          {/* Ships tab */}
           {activeTab === "ships" && (
-            <div className="max-w-6xl mx-auto flex items-center justify-center h-64">
-              <p className="text-sm font-mono text-muted-foreground">{`> ships.dashboard — coming soon`}</p>
+            <div className="max-w-6xl mx-auto space-y-4">
+              {/* Header + actions */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h2 className="font-display font-bold text-xl text-foreground">{`> ls ./ships`}</h2>
+                  <p className="text-xs font-mono text-muted-foreground">{`${projects.length} ships docked`}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex rounded-lg border border-white/10 overflow-hidden">
+                    <button
+                      onClick={() => setShipView("grid")}
+                      className={`p-2 ${shipView === "grid" ? "bg-primary/20 text-primary" : "bg-white/5 text-muted-foreground hover:text-foreground"} transition-colors`}
+                    >
+                      <Grid3X3 className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => setShipView("list")}
+                      className={`p-2 ${shipView === "list" ? "bg-primary/20 text-primary" : "bg-white/5 text-muted-foreground hover:text-foreground"} transition-colors`}
+                    >
+                      <List className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <Link
+                    to="/dashboard/projects/new"
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-primary text-primary-foreground font-bold text-xs glow-cyan hover:brightness-110 transition-all"
+                  >
+                    <Plus className="w-3 h-3" />
+                    Dock Ship
+                  </Link>
+                </div>
+              </div>
+
+              {/* Search + filters */}
+              <div className="flex flex-col sm:flex-row gap-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground/60" />
+                  <input
+                    type="text"
+                    value={shipSearch}
+                    onChange={(e) => setShipSearch(e.target.value)}
+                    placeholder="Search ships..."
+                    className="w-full pl-9 pr-3 py-2 rounded-lg bg-[#0b0f17] border border-white/10 text-xs text-foreground placeholder:text-muted-foreground/40 outline-none focus:border-primary/40 transition-all font-mono"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  {["all", "docked", "verified", "draft"].map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => setShipStatus(s)}
+                      className={`px-3 py-2 rounded-lg text-[10px] font-mono font-semibold border transition-all ${
+                        shipStatus === s
+                          ? "bg-primary/15 text-primary border-primary/30"
+                          : "bg-[#0b0f17] text-muted-foreground border-white/10 hover:text-foreground"
+                      }`}
+                    >
+                      {s === "all" ? "All" : s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Ships content */}
+              {projects.length === 0 ? (
+                <div className="rounded-xl border border-white/5 bg-[#0b0f17] p-12 text-center">
+                  <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                    <FolderGit2 className="w-6 h-6 text-primary" />
+                  </div>
+                  <p className="text-sm font-mono text-foreground mb-1">{`> ls ./ships`}</p>
+                  <p className="text-[11px] font-mono text-muted-foreground mb-2">{`# no ships found`}</p>
+                  <p className="text-xs text-muted-foreground mb-5">Dock your first ship to get started.</p>
+                  <Link
+                    to="/dashboard/projects/new"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-primary text-primary-foreground font-bold text-xs glow-cyan hover:brightness-110 transition-all"
+                  >
+                    <Plus className="w-3 h-3" />
+                    dock new_ship --help
+                  </Link>
+                </div>
+              ) : shipView === "grid" ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {projects
+                    .filter((p) => shipStatus === "all" || p.status === shipStatus)
+                    .filter((p) => !shipSearch || p.title.toLowerCase().includes(shipSearch.toLowerCase()))
+                    .map((project) => (
+                      <div key={project.id} className="group rounded-xl border border-white/5 bg-[#0b0f17] p-4 hover:border-primary/20 transition-all">
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+                            <FolderGit2 className="w-4 h-4 text-primary" />
+                          </div>
+                          <span className={`px-2 py-0.5 text-[10px] font-mono rounded-md border ${
+                            project.status === "verified"
+                              ? "bg-accent/10 text-accent border-accent/20"
+                              : project.status === "docked"
+                              ? "bg-primary/10 text-primary border-primary/20"
+                              : "bg-muted text-muted-foreground border-white/10"
+                          }`}>
+                            {project.status}
+                          </span>
+                        </div>
+                        <h3 className="font-display font-bold text-sm text-foreground mb-0.5 truncate group-hover:text-primary transition-colors">
+                          {project.title}
+                        </h3>
+                        <p className="text-[11px] text-muted-foreground line-clamp-1 mb-2">
+                          {project.description || "No description"}
+                        </p>
+                        <div className="flex flex-wrap gap-1 mb-3">
+                          {project.stack?.slice(0, 3).map((tech: string) => (
+                            <span key={tech} className="px-1.5 py-0.5 text-[9px] rounded bg-white/5 text-muted-foreground font-mono">{tech}</span>
+                          ))}
+                          {project.stack?.length > 3 && (
+                            <span className="px-1.5 py-0.5 text-[9px] rounded bg-white/5 text-muted-foreground font-mono">+{project.stack.length - 3}</span>
+                          )}
+                        </div>
+                        <div className="flex items-center justify-between pt-2 border-t border-white/5">
+                          <div className="flex items-center gap-2">
+                            <span className="flex items-center gap-1 text-[9px] font-mono text-muted-foreground/60">
+                              <Star className="w-2.5 h-2.5" />
+                              {project.view_count || 0}
+                            </span>
+                            <span className="text-[9px] font-mono text-muted-foreground/40">
+                              {format(new Date(project.created_at), "MMM d")}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            {project.live_url && (
+                              <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="p-1 rounded text-muted-foreground hover:text-primary transition-colors">
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            )}
+                            <button
+                              onClick={async () => {
+                                if (confirm(`Delete "${project.title}"?`)) {
+                                  setDeleting(project.id);
+                                  try {
+                                    await projectApi.delete(project.id);
+                                    setProjects((prev) => prev.filter((p) => p.id !== project.id));
+                                  } catch {}
+                                  setDeleting(null);
+                                }
+                              }}
+                              disabled={deleting === project.id}
+                              className="p-1 rounded text-muted-foreground hover:text-destructive transition-colors"
+                            >
+                              {deleting === project.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <div className="rounded-xl border border-white/5 bg-[#0b0f17] overflow-hidden">
+                  <table className="w-full text-left">
+                    <thead>
+                      <tr className="border-b border-white/5 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+                        <th className="px-4 py-3 font-semibold">Name</th>
+                        <th className="px-4 py-3 font-semibold">Status</th>
+                        <th className="px-4 py-3 font-semibold hidden sm:table-cell">Stack</th>
+                        <th className="px-4 py-3 font-semibold hidden md:table-cell">Views</th>
+                        <th className="px-4 py-3 font-semibold hidden md:table-cell">Docked</th>
+                        <th className="px-4 py-3 font-semibold text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {projects
+                        .filter((p) => shipStatus === "all" || p.status === shipStatus)
+                        .filter((p) => !shipSearch || p.title.toLowerCase().includes(shipSearch.toLowerCase()))
+                        .map((project) => (
+                          <tr key={project.id} className="border-b border-white/5 last:border-b-0 hover:bg-white/[0.02] transition-colors">
+                            <td className="px-4 py-3">
+                              <div className="flex items-center gap-2">
+                                <FolderGit2 className="w-3.5 h-3.5 text-primary shrink-0" />
+                                <span className="text-xs font-semibold text-foreground">{project.title}</span>
+                              </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              <span className={`px-2 py-0.5 text-[9px] font-mono rounded-md border ${
+                                project.status === "verified"
+                                  ? "bg-accent/10 text-accent border-accent/20"
+                                  : project.status === "docked"
+                                  ? "bg-primary/10 text-primary border-primary/20"
+                                  : "bg-muted text-muted-foreground border-white/10"
+                              }`}>
+                                {project.status}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 hidden sm:table-cell">
+                              <div className="flex gap-1">
+                                {project.stack?.slice(0, 2).map((tech: string) => (
+                                  <span key={tech} className="px-1.5 py-0.5 text-[9px] rounded bg-white/5 text-muted-foreground font-mono">{tech}</span>
+                                ))}
+                              </div>
+                            </td>
+                            <td className="px-4 py-3 hidden md:table-cell text-xs font-mono text-muted-foreground">
+                              {project.view_count || 0}
+                            </td>
+                            <td className="px-4 py-3 hidden md:table-cell text-xs font-mono text-muted-foreground">
+                              {format(new Date(project.created_at), "MMM d")}
+                            </td>
+                            <td className="px-4 py-3 text-right">
+                              <div className="flex items-center justify-end gap-1">
+                                {project.live_url && (
+                                  <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded text-muted-foreground hover:text-primary transition-colors">
+                                    <Eye className="w-3 h-3" />
+                                  </a>
+                                )}
+                                <button
+                                  onClick={async () => {
+                                    if (confirm(`Delete "${project.title}"?`)) {
+                                      setDeleting(project.id);
+                                      try {
+                                        await projectApi.delete(project.id);
+                                        setProjects((prev) => prev.filter((p) => p.id !== project.id));
+                                      } catch {}
+                                      setDeleting(null);
+                                    }
+                                  }}
+                                  disabled={deleting === project.id}
+                                  className="p-1.5 rounded text-muted-foreground hover:text-destructive transition-colors"
+                                >
+                                  {deleting === project.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           )}
           {activeTab === "contracts" && (
