@@ -1,4 +1,4 @@
-import { Zap, Menu, LogOut, User, FolderGit2, LayoutDashboard, Sun, Moon, Monitor, Bell, Search } from "lucide-react";
+import { Zap, X, Menu, LogOut, User, FolderGit2, LayoutDashboard, Sun, Moon, Monitor, Bell, Search, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -13,9 +13,13 @@ const Navbar = () => {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const navigate = useNavigate();
 
+  const userName = user?.user_metadata?.full_name?.split(" ")[0] || user?.user_metadata?.user_name || "Builder";
+  const userRole = user?.user_metadata?.role || "Builder";
+
   const handleSignOut = async () => {
     await signOut();
     setUserMenuOpen(false);
+    setOpen(false);
     navigate("/");
   };
 
@@ -137,35 +141,44 @@ const Navbar = () => {
                     <User className="w-4 h-4 text-primary-foreground" />
                   )}
                 </div>
-                <span className="text-sm font-semibold text-white hidden sm:block">
-                  {user.user_metadata?.full_name?.split(" ")[0] || user.user_metadata?.user_name || "Builder"}
-                </span>
+                <div className="hidden sm:flex items-center gap-2">
+                  <span className="text-sm font-semibold text-foreground">
+                    {userName}
+                  </span>
+                  <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/20">
+                    {userRole}
+                  </span>
+                </div>
               </button>
 
               {userMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 rounded-2xl border border-white/10 bg-card/95 backdrop-blur-2xl shadow-2xl py-2 animate-in fade-in zoom-in-95 duration-150 z-50">
+                <div className="absolute right-0 mt-2 w-52 rounded-2xl border border-white/10 bg-card/95 backdrop-blur-2xl shadow-2xl py-2 animate-in fade-in zoom-in-95 duration-150 z-50">
+                  <div className="px-4 pb-2 border-b border-white/10 mb-1">
+                    <p className="text-sm font-semibold text-foreground">{userName}</p>
+                    <p className="text-[10px] font-mono text-primary">{`> ${userRole.toLowerCase()} --online`}</p>
+                  </div>
                   <Link
                     to="/dashboard"
                     onClick={() => setUserMenuOpen(false)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-white hover:bg-primary/10">
-                    <LayoutDashboard className="w-4 h-4" />
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-primary/10">
+                    <LayoutDashboard className="w-4 h-4 text-primary" />
                     Dashboard
                   </Link>
                   <Link
                     to="#"
                     onClick={() => setUserMenuOpen(false)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-white hover:bg-primary/10">
-                    <FolderGit2 className="w-4 h-4" />
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-primary/10">
+                    <FolderGit2 className="w-4 h-4 text-secondary" />
                     My Ships
                   </Link>
                   <Link
                     to="#"
                     onClick={() => setUserMenuOpen(false)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-white hover:bg-primary/10">
-                    <User className="w-4 h-4" />
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-primary/10">
+                    <User className="w-4 h-4 text-accent" />
                     Profile
                   </Link>
-                  <hr className="border-white/10 my-2" />
+                  <hr className="border-white/10 my-1" />
                   <button
                     onClick={handleSignOut}
                     className="flex items-center gap-2 w-full px-4 py-2 text-sm text-destructive hover:bg-destructive/10">
@@ -200,27 +213,125 @@ const Navbar = () => {
         </button>
       </nav>
 
-      {/* Mobile menu overlay */}
-      {open && (
-        <div className="absolute top-16 left-0 right-0 p-5 rounded-3xl border border-white/10 bg-card/95 backdrop-blur-2xl shadow-2xl flex flex-col gap-4 md:hidden animate-in fade-in slide-in-from-top-4 duration-200">
-          <a href="#builders" className="text-sm font-semibold hover:text-primary transition-colors py-2 border-b border-white/5" onClick={() => setOpen(false)}>Builders</a>
-          <a href="#projects" className="text-sm font-semibold hover:text-primary transition-colors py-2 border-b border-white/5" onClick={() => setOpen(false)}>Projects</a>
-          <a href="#hire" className="text-sm font-semibold hover:text-primary transition-colors py-2 border-b border-white/5" onClick={() => setOpen(false)}>Hire</a>
-          <a href="#discover" className="text-sm font-semibold hover:text-primary transition-colors py-2" onClick={() => setOpen(false)}>Discover</a>
-          <div className="flex flex-col gap-3 mt-2">
+      {/* Mobile Terminal Panel */}
+      <div
+        className={`fixed inset-0 z-[60] transition-all duration-300 md:hidden ${
+          open ? "pointer-events-auto" : "pointer-events-none"
+        }`}
+      >
+        <div
+          className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
+            open ? "opacity-100" : "opacity-0"
+          }`}
+          onClick={() => setOpen(false)}
+        />
+        <div
+          className={`absolute top-0 right-0 h-full w-[82vw] max-w-sm bg-[#0b0f17] border-l border-white/10 shadow-2xl transition-transform duration-300 ease-out ${
+            open ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          {/* Terminal title bar */}
+          <div className="flex items-center gap-2 px-4 py-3.5 border-b border-white/10 bg-[#111622]">
+            <div className="flex gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
+            </div>
+            <span className="text-[11px] font-mono text-muted-foreground ml-2.5">~/shipyard</span>
+            <button
+              onClick={() => setOpen(false)}
+              className="ml-auto p-1 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {/* User info */}
+          {user && (
+            <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5 bg-white/[0.02]">
+              <div className="w-9 h-9 rounded-full bg-gradient-primary flex items-center justify-center shrink-0">
+                {user.user_metadata?.avatar_url ? (
+                  <img
+                    src={user.user_metadata.avatar_url}
+                    alt={userName}
+                    className="w-9 h-9 rounded-full"
+                  />
+                ) : (
+                  <User className="w-4 h-4 text-primary-foreground" />
+                )}
+              </div>
+              <div className="min-w-0">
+                <div className="text-sm font-semibold text-foreground truncate">{userName}</div>
+                <div className="text-[10px] font-mono text-primary">{`> ${userRole.toLowerCase()} --online`}</div>
+              </div>
+            </div>
+          )}
+
+          {/* Terminal navigation items */}
+          <div className="flex flex-col py-3">
+            <div className="px-4 py-1.5 text-[10px] font-mono text-muted-foreground/50"># navigation</div>
+            <button
+              onClick={() => { setOpen(false); }}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-primary/5 transition-colors group"
+            >
+              <span className="text-muted-foreground font-mono text-xs">{`>`}</span>
+              <span className="flex-1">cd builders</span>
+              <ChevronRight className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+            </button>
+            <a
+              href="#builders"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-colors group ml-7"
+            >
+              <span className="text-[10px] font-mono">#/</span>
+              Builders
+            </a>
+            <a
+              href="#projects"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-colors group ml-7"
+            >
+              <span className="text-[10px] font-mono">#/</span>
+              Projects
+            </a>
+            <a
+              href="#hire"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-colors group ml-7"
+            >
+              <span className="text-[10px] font-mono">#/</span>
+              Hire
+            </a>
+            <a
+              href="#discover"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-colors group ml-7"
+            >
+              <span className="text-[10px] font-mono">#/</span>
+              Discover
+            </a>
+
+            <div className="h-px bg-white/5 my-2 mx-4" />
+
+            <div className="px-4 py-1.5 text-[10px] font-mono text-muted-foreground/50"># user</div>
             {user ? (
               <>
                 <Link
                   to="/dashboard"
                   onClick={() => setOpen(false)}
-                  className="py-2.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-bold glow-cyan text-center">
-                    Dashboard
-                  </Link>
-                <button
-                  onClick={() => { handleSignOut(); setOpen(false); }}
-                  className="py-2.5 rounded-full border border-white/10 text-sm font-semibold text-destructive hover:bg-destructive/10 transition-colors text-center"
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-primary/5 transition-colors group"
                 >
-                  Sign Out
+                  <span className="text-muted-foreground font-mono text-xs">{`>`}</span>
+                  <span className="flex-1">dashboard --open</span>
+                  <ChevronRight className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/5 transition-colors group"
+                >
+                  <span className="text-destructive/60 font-mono text-xs">{`>`}</span>
+                  <span className="flex-1">signout --force</span>
+                  <ChevronRight className="w-3 h-3 text-destructive/40 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </button>
               </>
             ) : (
@@ -228,20 +339,34 @@ const Navbar = () => {
                 <Link
                   to="/login"
                   onClick={() => setOpen(false)}
-                  className="py-2.5 rounded-full border border-white/10 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors text-center">
-                    Sign In
-                  </Link>
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-primary/5 transition-colors group"
+                >
+                  <span className="text-muted-foreground font-mono text-xs">{`>`}</span>
+                  <span className="flex-1">auth --login</span>
+                  <ChevronRight className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                </Link>
                 <Link
                   to="/login"
                   onClick={() => setOpen(false)}
-                  className="py-2.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-bold glow-cyan text-center">
-                    Join as Builder
-                  </Link>
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-primary/5 transition-colors group"
+                >
+                  <span className="text-primary font-mono text-xs">{`>`}</span>
+                  <span className="flex-1 text-primary">join --as builder</span>
+                  <ChevronRight className="w-3 h-3 text-primary/40 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </Link>
               </>
             )}
           </div>
+
+          {/* Bottom status bar */}
+          <div className="absolute bottom-0 left-0 right-0 px-4 py-2.5 border-t border-white/5 bg-[#111622] flex items-center justify-between">
+            <span className="text-[10px] font-mono text-muted-foreground/50">{`[~] $`}</span>
+            <span className="text-[10px] font-mono text-muted-foreground/50">
+              {theme} mode
+            </span>
+          </div>
         </div>
-      )}
+      </div>
 
       {/* Command Palette Modal */}
       {cmdOpen && (
