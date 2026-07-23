@@ -1,21 +1,26 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "motion/react";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
 import { profileApi, projectApi, contractApi } from "@/lib/api";
-import type { Profile, Project, Contract, ContractMilestone } from "@/types";
+import { Badge } from "@/components/ui/badge";
+import type { Profile, Project, Contract, ContractMilestone, HireProject, Invitation } from "@/types";
+import { MOCK_HIRE_PROJECTS, MOCK_INVITATIONS } from "@/lib/marketplace-data";
 import { toast } from "@/hooks/use-toast";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import {
-  Bell, LayoutDashboard, FolderGit2, FileText, User, Settings,
+  Bell, LayoutDashboard, FolderGit2, FileText, User, Settings, Briefcase,
   LogOut, Plus, ExternalLink, Loader2, ChevronRight, Search, Zap,
   List, Grid3X3, Trash2, Eye, Star, Check, Pencil, Mail, Calendar, Globe, Github,
-  X, Save, Loader, Image, ArrowUpCircle, Clock, AlertTriangle, CircleDollarSign, MessageCircle, Sun, Moon, Monitor, Shield
+  X, Save, Loader, Image, ArrowUpCircle, Clock, AlertTriangle, CircleDollarSign, MessageCircle, Sun, Moon, Monitor, Shield,
+  Sparkles, BookmarkCheck, X as XIcon, Send, User as UserIcon, BadgeCheck, BarChart3, CheckCheck
 } from "lucide-react";
 
 const NAV_ITEMS = [
   { id: "overview", label: "Overview", icon: LayoutDashboard, color: "primary" },
   { id: "ships", label: "Ships", icon: FolderGit2, color: "primary" },
+  { id: "projects", label: "Projects", icon: Briefcase, color: "primary" },
   { id: "contracts", label: "Contracts", icon: FileText, color: "accent" },
   { id: "profile", label: "Profile", icon: User, color: "secondary" },
   { id: "settings", label: "Settings", icon: Settings, color: "muted" },
@@ -1279,6 +1284,124 @@ const Dashboard = () => {
               )}
             </div>
           )}
+          {activeTab === "projects" && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="max-w-6xl mx-auto space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] font-mono text-primary/60">/marketplace</span>
+                    <span className="w-1 h-1 rounded-full bg-primary/60 animate-pulse" />
+                  </div>
+                  <h2 className="font-display font-black text-xl text-foreground">Marketplace Projects</h2>
+                  <p className="text-xs font-mono text-muted-foreground mt-0.5">Browse, post, and manage hiring projects</p>
+                </div>
+                <Link to="/post-project">
+                  <Button className="bg-gradient-primary text-primary-foreground font-bold text-xs glow-cyan hover:brightness-110 transition-all h-9">
+                    <Plus className="w-4 h-4" />
+                    Post a Project
+                  </Button>
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="rounded-xl border border-border/50 bg-muted/60 backdrop-blur-sm p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                      <Briefcase className="w-4 h-4 text-primary" /> Open Projects
+                    </h3>
+                    <Badge variant="secondary" className="text-[9px] font-mono">{MOCK_HIRE_PROJECTS.filter(p => p.status === "open").length} available</Badge>
+                  </div>
+                  <div className="space-y-1.5">
+                    {MOCK_HIRE_PROJECTS.filter(p => p.status === "open").slice(0, 5).map((project, i) => (
+                      <motion.div key={project.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}>
+                        <Link to={`/projects/${project.id}`} className="group flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/[0.04] hover:border hover:border-border/50 transition-all border border-transparent">
+                          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 flex items-center justify-center shrink-0">
+                            <Briefcase className="w-4 h-4 text-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-semibold text-foreground truncate group-hover:text-primary transition-colors">{project.title}</p>
+                            <p className="text-[9px] font-mono text-muted-foreground/60">
+                              ${project.budget_min.toLocaleString()} – ${project.budget_max.toLocaleString()} · {project.timeline_weeks}w · {project.category}
+                            </p>
+                          </div>
+                          <div className="hidden sm:flex items-center gap-2">
+                            <div className="flex items-center gap-1 text-[9px] font-mono text-primary/60 bg-primary/[0.04] rounded-full px-2 py-0.5 border border-primary/10">
+                              <Sparkles className="w-2.5 h-2.5" /> {project.interest_count}
+                            </div>
+                            <ChevronRight className="w-3 h-3 text-muted-foreground/20 group-hover:text-primary/60 transition-colors" />
+                          </div>
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </div>
+                  <Link to="/projects" className="block mt-3 text-center text-[10px] font-mono text-primary/80 hover:text-primary transition-colors py-1.5 rounded-lg hover:bg-white/[0.02]">
+                    Browse all projects →
+                  </Link>
+                </div>
+
+                <div className="rounded-xl border border-border/50 bg-muted/60 backdrop-blur-sm p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-primary" /> Your Invitations
+                    </h3>
+                    <Badge variant="secondary" className="text-[9px] font-mono">{MOCK_INVITATIONS.length} received</Badge>
+                  </div>
+                  <div className="space-y-2">
+                    {MOCK_INVITATIONS.map((inv, i) => (
+                      <InvitationCard key={inv.id} inv={inv} index={i} />
+                    ))}
+                    {MOCK_INVITATIONS.length === 0 && (
+                      <p className="text-xs text-muted-foreground/60 font-mono text-center py-6">{`> inbox.empty — no invitations yet`}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-border/50 bg-muted/60 backdrop-blur-sm p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-primary" /> Matching Preferences
+                  </h3>
+                  <button className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors">Edit</button>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[
+                    { label: "Ideal Projects", value: "AI Agents, Automation" },
+                    { label: "Budget Range", value: "$5k – $15k" },
+                    { label: "Availability", value: "Immediate" },
+                    { label: "Collaboration", value: "Solo or Team" },
+                  ].map((pref) => (
+                    <div key={pref.label} className="rounded-xl bg-background/80 border border-border/40 p-3.5 hover:border-border/60 transition-colors">
+                      <p className="text-[9px] font-mono text-muted-foreground/60 uppercase tracking-wider mb-1">{pref.label}</p>
+                      <p className="text-xs font-semibold text-foreground">{pref.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-border/50 bg-muted/60 backdrop-blur-sm p-5">
+                <h3 className="text-sm font-semibold text-foreground flex items-center gap-2 mb-4">
+                  <BarChart3 className="w-4 h-4 text-accent" /> Quick Stats
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[
+                    { label: "Projects Viewed", value: "142", change: "+12%", positive: true },
+                    { label: "Interest Sent", value: "8", change: "+3", positive: true },
+                    { label: "Invitations Received", value: "3", change: "+1", positive: true },
+                    { label: "Match Rate", value: "94%", change: "+2%", positive: true },
+                  ].map((stat) => (
+                    <div key={stat.label} className="rounded-xl bg-background/80 border border-border/40 p-3.5">
+                      <p className="text-[9px] font-mono text-muted-foreground/60">{stat.label}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <p className="text-lg font-bold text-foreground">{stat.value}</p>
+                        <span className={`text-[10px] font-mono ${stat.positive ? "text-accent" : "text-destructive"}`}>{stat.change}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
           {activeTab === "settings" && (
             <div className="max-w-6xl mx-auto space-y-6">
               <div className="flex items-center justify-between">
@@ -1413,6 +1536,85 @@ const Dashboard = () => {
         </main>
       </div>
     </div>
+  );
+};
+
+const InvitationCard = ({ inv, index }: { inv: Invitation; index: number }) => {
+  const [responded, setResponded] = useState<"pending" | "accepted" | "declined">(inv.status);
+  const [responding, setResponding] = useState(false);
+
+  const handleRespond = async (action: "accepted" | "declined") => {
+    setResponding(true);
+    await new Promise((r) => setTimeout(r, 600));
+    setResponded(action);
+    setResponding(false);
+    toast({
+      title: action === "accepted" ? "Invitation Accepted!" : "Invitation Declined",
+      description: action === "accepted" ? "You can now discuss project details." : "The creator will be notified.",
+      duration: 4000,
+    });
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.05 }}
+    >
+      <div className="group px-3.5 py-3 rounded-xl bg-background/60 border border-border/40 hover:border-border/60 hover:bg-background/80 transition-all">
+        <div className="flex items-start gap-3">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 flex items-center justify-center shrink-0">
+            {inv.creator?.avatar_url ? (
+              <img src={inv.creator.avatar_url} alt="" className="w-9 h-9 rounded-full" />
+            ) : (
+              <UserIcon className="w-4 h-4 text-primary" />
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2 mb-0.5">
+              <p className="text-xs font-semibold text-foreground">{inv.project?.title || "Project"}</p>
+              <div className={`px-2 py-0.5 rounded-full text-[8px] font-mono font-bold border shrink-0 ${
+                responded === "pending" ? "bg-amber-500/10 text-amber-400 border-amber-500/20" :
+                responded === "accepted" ? "bg-accent/10 text-accent border-accent/20" :
+                "bg-muted text-muted-foreground border-border/40"
+              }`}>
+                {responded === "accepted" ? "✓ Accepted" : responded === "declined" ? "✕ Declined" : "● Pending"}
+              </div>
+            </div>
+            <p className="text-[10px] text-muted-foreground/70 leading-relaxed line-clamp-2">
+              "{inv.personalized_message}"
+            </p>
+            <div className="flex items-center gap-2 mt-1.5">
+              <span className="text-[9px] font-mono text-muted-foreground/50">
+                From {inv.creator?.full_name} · {formatDistanceToNow(new Date(inv.sent_at), { addSuffix: true })}
+              </span>
+            </div>
+            {responded === "pending" && (
+              <div className="flex items-center gap-2 mt-2.5">
+                <button
+                  onClick={() => handleRespond("accepted")}
+                  disabled={responding}
+                  className="px-3 py-1 rounded-lg bg-accent/10 border border-accent/20 text-[9px] font-mono text-accent hover:bg-accent/20 transition-all flex items-center gap-1 disabled:opacity-50"
+                >
+                  {responding ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCheck className="w-3 h-3" />}
+                  Accept
+                </button>
+                <button
+                  onClick={() => handleRespond("declined")}
+                  disabled={responding}
+                  className="px-3 py-1 rounded-lg bg-muted border border-border/50 text-[9px] font-mono text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-all flex items-center gap-1 disabled:opacity-50"
+                >
+                  <XIcon className="w-3 h-3" /> Decline
+                </button>
+                <Link to={`/projects/${inv.project_id}`} className="ml-auto text-[9px] font-mono text-primary/60 hover:text-primary transition-colors">
+                  Details →
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
