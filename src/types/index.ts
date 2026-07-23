@@ -72,3 +72,74 @@ export interface ContractMilestone {
   due_date: string | null;
   completed_at: string | null;
 }
+
+export interface AIParsedRequirements {
+  core_requirement: string;
+  integrations: string[];
+  tech_stack: string[];
+  complexity: 'low' | 'medium' | 'high';
+  ideal_builder_type: string;
+}
+
+export interface HireProject {
+  id: string;
+  creator_id: string;
+  title: string;
+  description: string;
+  ai_parsed_requirements: AIParsedRequirements | null;
+  budget_min: number;
+  budget_max: number;
+  budget_currency: string;
+  timeline_weeks: number;
+  category: string;
+  scope: 'small' | 'medium' | 'large';
+  complexity: 'low' | 'medium' | 'high';
+  required_skills: string[];
+  preferred_tech_stack: string[];
+  success_criteria: string;
+  status: 'draft' | 'open' | 'in_review' | 'matched' | 'closed' | 'cancelled';
+  visibility: 'public' | 'private';
+  views_count: number;
+  interest_count: number;
+  created_at: string;
+  updated_at: string;
+  creator?: Profile;
+}
+
+export interface BuilderMatch {
+  id: string;
+  project_id: string;
+  builder_id: string;
+  builder?: Profile;
+  match_score: number;
+  match_reasons: string[];
+  skills_match: string[];
+  experience_match: string;
+  invited: boolean;
+  invitation_sent_at: string | null;
+  invitation_response: 'pending' | 'accepted' | 'declined' | null;
+}
+
+export interface Invitation {
+  id: string;
+  project_id: string;
+  project?: HireProject;
+  creator_id: string;
+  creator?: Profile;
+  builder_id: string;
+  builder?: Profile;
+  personalized_message: string;
+  status: 'pending' | 'accepted' | 'declined' | 'expired';
+  sent_at: string;
+  responded_at: string | null;
+}
+
+export interface ProjectFeedback {
+  id: string;
+  project_id: string;
+  from_id: string;
+  to_id: string;
+  rating: number;
+  feedback: string;
+  created_at: string;
+}
