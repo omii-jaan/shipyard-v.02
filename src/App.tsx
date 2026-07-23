@@ -12,6 +12,9 @@ import Index from "./pages/Index.tsx";
 import Login from "./pages/Login.tsx";
 import AuthCallback from "./pages/AuthCallback.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
+import PostProject from "./pages/PostProject.tsx";
+import Projects from "./pages/Projects.tsx";
+import ProjectDetail from "./pages/ProjectDetail.tsx";
 import ProfilePreview from "./pages/ProfilePreview.tsx";
 import BuilderProfile from "./pages/BuilderProfile.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -54,6 +57,9 @@ const AppRoutes = () => {
             </AnimatedPage>
           }
         />
+        <Route path="/post-project" element={<AnimatedPage><PostProject /></AnimatedPage>} />
+        <Route path="/projects" element={<AnimatedPage><Projects /></AnimatedPage>} />
+        <Route path="/projects/:id" element={<AnimatedPage><ProjectDetail /></AnimatedPage>} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<AnimatedPage><NotFound /></AnimatedPage>} />
       </Routes>
