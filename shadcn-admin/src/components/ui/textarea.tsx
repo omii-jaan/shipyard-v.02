@@ -5,11 +5,11 @@ function Textarea({
   className,
   'aria-invalid': ariaInvalid,
   ...props
-}: React.ComponentProps<'textarea'>) {
+}: React.ComponentProps<'textarea'> & { 'aria-invalid'?: boolean | 'true' | 'false' }) {
   return (
     <textarea
       data-slot='textarea'
-      'aria-invalid'={ariaInvalid}
+      aria-invalid={ariaInvalid}
       className={cn(
         'flex field-sizing-content min-h-16 w-full',
         'rounded-[var(--radius-input)]',

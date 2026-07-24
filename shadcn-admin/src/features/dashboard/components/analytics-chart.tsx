@@ -1,41 +1,13 @@
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 
 const data = [
-  {
-    name: 'Mon',
-    clicks: Math.floor(Math.random() * 900) + 100,
-    uniques: Math.floor(Math.random() * 700) + 80,
-  },
-  {
-    name: 'Tue',
-    clicks: Math.floor(Math.random() * 900) + 100,
-    uniques: Math.floor(Math.random() * 700) + 80,
-  },
-  {
-    name: 'Wed',
-    clicks: Math.floor(Math.random() * 900) + 100,
-    uniques: Math.floor(Math.random() * 700) + 80,
-  },
-  {
-    name: 'Thu',
-    clicks: Math.floor(Math.random() * 900) + 100,
-    uniques: Math.floor(Math.random() * 700) + 80,
-  },
-  {
-    name: 'Fri',
-    clicks: Math.floor(Math.random() * 900) + 100,
-    uniques: Math.floor(Math.random() * 700) + 80,
-  },
-  {
-    name: 'Sat',
-    clicks: Math.floor(Math.random() * 900) + 100,
-    uniques: Math.floor(Math.random() * 700) + 80,
-  },
-  {
-    name: 'Sun',
-    clicks: Math.floor(Math.random() * 900) + 100,
-    uniques: Math.floor(Math.random() * 700) + 80,
-  },
+  { name: 'Mon', clicks: Math.floor(Math.random() * 900) + 100, uniques: Math.floor(Math.random() * 700) + 80 },
+  { name: 'Tue', clicks: Math.floor(Math.random() * 900) + 100, uniques: Math.floor(Math.random() * 700) + 80 },
+  { name: 'Wed', clicks: Math.floor(Math.random() * 900) + 100, uniques: Math.floor(Math.random() * 700) + 80 },
+  { name: 'Thu', clicks: Math.floor(Math.random() * 900) + 100, uniques: Math.floor(Math.random() * 700) + 80 },
+  { name: 'Fri', clicks: Math.floor(Math.random() * 900) + 100, uniques: Math.floor(Math.random() * 700) + 80 },
+  { name: 'Sat', clicks: Math.floor(Math.random() * 900) + 100, uniques: Math.floor(Math.random() * 700) + 80 },
+  { name: 'Sun', clicks: Math.floor(Math.random() * 900) + 100, uniques: Math.floor(Math.random() * 700) + 80 },
 ]
 
 export function AnalyticsChart() {
@@ -44,13 +16,13 @@ export function AnalyticsChart() {
       <AreaChart data={data}>
         <XAxis
           dataKey='name'
-          stroke='#888888'
+          stroke='var(--text-tertiary)'
           fontSize={12}
           tickLine={false}
           axisLine={false}
         />
         <YAxis
-          stroke='#888888'
+          stroke='var(--text-tertiary)'
           fontSize={12}
           tickLine={false}
           axisLine={false}
@@ -58,17 +30,15 @@ export function AnalyticsChart() {
         <Area
           type='monotone'
           dataKey='clicks'
-          stroke='currentColor'
-          className='text-primary'
-          fill='currentColor'
+          stroke='var(--primary-500)'
+          fill='var(--primary-500)'
           fillOpacity={0.15}
         />
         <Area
           type='monotone'
           dataKey='uniques'
-          stroke='currentColor'
-          className='text-muted-foreground'
-          fill='currentColor'
+          stroke='var(--text-tertiary)'
+          fill='var(--text-tertiary)'
           fillOpacity={0.1}
         />
       </AreaChart>

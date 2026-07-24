@@ -1,12 +1,17 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 
-function Input({ className, type, 'aria-invalid': ariaInvalid, ...props }: React.ComponentProps<'input'>) {
+function Input({
+  className,
+  type,
+  'aria-invalid': ariaInvalid,
+  ...props
+}: React.ComponentProps<'input'> & { 'aria-invalid'?: boolean | 'true' | 'false' }) {
   return (
     <input
       type={type}
       data-slot='input'
-      'aria-invalid'={ariaInvalid}
+      aria-invalid={ariaInvalid}
       className={cn(
         'flex h-9 w-full min-w-0',
         'rounded-[var(--radius-input)]',

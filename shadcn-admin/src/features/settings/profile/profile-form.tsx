@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { Stack, Inline } from '@/components/layout-primitives'
 
 const profileFormSchema = z.object({
   username: z
@@ -47,7 +48,6 @@ const profileFormSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
-// This can come from your database or API.
 const defaultValues: Partial<ProfileFormValues> = {
   bio: 'I own a computer.',
   urls: [
@@ -138,7 +138,7 @@ export function ProfileForm() {
             </FormItem>
           )}
         />
-        <div>
+        <Stack size="md">
           {fields.map((field, index) => (
             <FormField
               control={form.control}
@@ -160,16 +160,17 @@ export function ProfileForm() {
               )}
             />
           ))}
-          <Button
-            type='button'
-            variant='outline'
-            size='sm'
-            className='mt-2'
-            onClick={() => append({ value: '' })}
-          >
-            Add URL
-          </Button>
-        </div>
+          <Inline>
+            <Button
+              type='button'
+              variant='outline'
+              size='sm'
+              onClick={() => append({ value: '' })}
+            >
+              Add URL
+            </Button>
+          </Inline>
+        </Stack>
         <Button type='submit'>Update profile</Button>
       </form>
     </Form>
