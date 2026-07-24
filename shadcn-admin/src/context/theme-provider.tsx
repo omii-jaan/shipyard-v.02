@@ -57,8 +57,13 @@ export function ThemeProvider({
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 
     const applyTheme = (currentResolvedTheme: ResolvedTheme) => {
-      root.classList.remove('light', 'dark') // Remove existing theme classes
-      root.classList.add(currentResolvedTheme) // Add the new theme class
+      // Remove existing theme classes and data-theme attributes
+      root.classList.remove('light', 'dark')
+      root.removeAttribute('data-theme')
+      
+      // Add the new theme class and data-theme attribute
+      root.classList.add(currentResolvedTheme)
+      root.setAttribute('data-theme', currentResolvedTheme)
     }
 
     const handleChange = () => {
