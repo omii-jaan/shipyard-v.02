@@ -1,3 +1,4 @@
+import * as React from 'react'
 import {
   Card,
   CardContent,
@@ -6,36 +7,67 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { AnalyticsChart } from './analytics-chart'
-import { Grid, Stack, Inline } from '@/components/layout-primitives'
+import { Grid, Stack } from '@/components/layout-primitives'
+import { DataState, MetricCardSkeleton, ChartSkeleton } from '@/components/data-state'
 
 export function Analytics() {
+  const [trafficData, setTrafficData] = React.useState<{ name: string; clicks: number; uniques: number }[] | null>(null)
+  const [isLoading, setIsLoading] = React.useState(true)
+  const [error, setError] = React.useState<Error | null>(null)
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true)
+        await new Promise(r => setTimeout(r, 500))
+        const data = [
+          { name: 'Mon', clicks: 450, uniques: 320 },
+          { name: 'Tue', clicks: 520, uniques: 380 },
+          { name: 'Wed', clicks: 480, uniques: 350 },
+          { name: 'Thu', clicks: 610, uniques: 420 },
+          { name: 'Fri', clicks: 590, uniques: 410 },
+          { name: 'Sat', clicks: 380, uniques: 290 },
+          { name: 'Sun', clicks: 320, uniques: 250 },
+        ]
+        setTrafficData(data)
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Failed to load'))
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
+
   return (
     <Stack size="lg">
-      <Card>
-        <CardHeader>
-          <CardTitle>Traffic Overview</CardTitle>
-          <CardDescription>Weekly clicks and unique visitors</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <AnalyticsChart />
-        </CardContent>
-      </Card>
+      <DataState
+        data={trafficData}
+        isLoading={isLoading}
+        error={error}
+        emptyMessage="No traffic data available"
+        skeleton={<ChartSkeleton />}
+      >
+        {(data) => (
+          <Card>
+            <CardHeader>
+              <CardTitle>Traffic Overview</CardTitle>
+              <CardDescription>Weekly clicks and unique visitors</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AnalyticsChart data={data} />
+            </CardContent>
+          </Card>
+        )}
+      </DataState>
+
       <Grid cols={1} colsSm={2} colsLg={4} gap="md">
         <MetricCard
           title="Total Clicks"
-          value="1,248"
+          value="2,350"
           change="+12.4% vs last week"
           icon={
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              className='h-4 w-4 text-[var(--text-tertiary)]'
-            >
+            <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' className='h-4 w-4 text-[var(--text-tertiary)]'>
               <path d='M3 3v18h18' />
               <path d='M7 15l4-4 4 4 4-6' />
             </svg>
@@ -43,19 +75,10 @@ export function Analytics() {
         />
         <MetricCard
           title="Unique Visitors"
-          value="832"
+          value="2,420"
           change="+5.8% vs last week"
           icon={
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              className='h-4 w-4 text-[var(--text-tertiary)]'
-            >
+            <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' className='h-4 w-4 text-[var(--text-tertiary)]'>
               <circle cx='12' cy='7' r='4' />
               <path d='M6 21v-2a6 6 0 0 1 12 0v2' />
             </svg>
@@ -66,16 +89,7 @@ export function Analytics() {
           value="42%"
           change="-3.2% vs last week"
           icon={
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              className='h-4 w-4 text-[var(--text-tertiary)]'
-            >
+            <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' className='h-4 w-4 text-[var(--text-tertiary)]'>
               <path d='M3 12h6l3 6 3-6h6' />
             </svg>
           }
@@ -85,22 +99,14 @@ export function Analytics() {
           value="3m 24s"
           change="+18s vs last week"
           icon={
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              className='h-4 w-4 text-[var(--text-tertiary)]'
-            >
+            <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' className='h-4 w-4 text-[var(--text-tertiary)]'>
               <circle cx='12' cy='12' r='10' />
               <path d='M12 6v6l4 2' />
             </svg>
           }
         />
       </Grid>
+
       <Grid cols={1} colsLg={7} gap="md">
         <Card className='lg:col-span-4'>
           <CardHeader>
@@ -157,7 +163,7 @@ function MetricCard({
     <Card>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
         <CardTitle className='text-sm font-medium'>{title}</CardTitle>
-        {icon}
+        <div className='h-4 w-4 text-[var(--text-tertiary)]'>{icon}</div>
       </CardHeader>
       <CardContent>
         <div className='text-2xl font-bold text-[var(--text-primary)]'>{value}</div>

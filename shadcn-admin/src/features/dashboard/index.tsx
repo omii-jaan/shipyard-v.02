@@ -18,7 +18,9 @@ import { Analytics } from './components/analytics'
 import { Overview } from './components/overview'
 import { RecentSales } from './components/recent-sales'
 import { Stack, Inline, Grid } from '@/components/layout-primitives'
+import { DataState, ChartSkeleton } from '@/components/data-state'
 import { cn } from '@/lib/utils'
+import * as React from 'react'
 
 export function Dashboard() {
   return (
@@ -90,7 +92,13 @@ export function Dashboard() {
                   <CardTitle>Overview</CardTitle>
                 </CardHeader>
                 <CardContent className='ps-2'>
-                  <Overview />
+                  <DataState
+                    data={null}
+                    isLoading={false}
+                    skeleton={<ChartSkeleton />}
+                  >
+                    {() => <Overview />}
+                  </DataState>
                 </CardContent>
               </Card>
               <Card className='col-span-1 lg:col-span-3'>
