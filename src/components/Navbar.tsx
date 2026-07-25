@@ -1,8 +1,19 @@
-import { Zap, X, Menu, LogOut, User, FolderGit2, LayoutDashboard, Sun, Moon, Monitor, Bell, Search, ChevronRight } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Zap, X, Menu, LogOut, User, FolderGit2, LayoutDashboard, Sun, Moon, Monitor, Bell, Search, ChevronRight, Star } from "lucide-react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
+import { useScrollVelocity } from "@/hooks/useScrollVelocity";
+import { scrollToSection } from "@/components/SmoothScroll";
+import MagneticButton from "@/components/MagneticButton";
+
+const NAV_LINKS = [
+  { id: "builders", label: "Builders" },
+  { id: "projects", label: "Projects" },
+  { id: "hire", label: "Hire" },
+  { id: "discover", label: "Discover" },
+];
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -10,11 +21,23 @@ const Navbar = () => {
   const [notifOpen, setNotifOpen] = useState(false);
   const [cmdOpen, setCmdOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
+  const [mounted, setMounted] = useState(false);
+  const [cursorX, setCursorX] = useState(50);
+  const navRef = useRef<HTMLElement>(null);
+  const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
 
+  const { scrollY, velocity } = useScrollVelocity();
+  const { user, signOut, loading } = useAuth();
+  const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
+
+  useEffect(() => setMounted(true), []);
+
+  // Active section tracking
   useEffect(() => {
-    const sections = ["builders", "projects", "hire", "discover"];
     const observers: IntersectionObserver[] = [];
-    sections.forEach((id) => {
+    NAV_LINKS.forEach(({ id }) => {
       const el = document.getElementById(id);
       if (!el) return;
       const observer = new IntersectionObserver(
@@ -26,9 +49,46 @@ const Navbar = () => {
     });
     return () => observers.forEach((o) => o.disconnect());
   }, []);
-  const { user, signOut, loading } = useAuth();
-  const { theme, setTheme, resolvedTheme } = useTheme();
-  const navigate = useNavigate();
+
+  // Liquid indicator position
+  useEffect(() => {
+    if (activeSection && linkRefs.current[activeSection]) {
+      const el = linkRefs.current[activeSection]!;
+      const parent = el.parentElement!.getBoundingClientRect();
+      const rect = el.getBoundingClientRect();
+      setIndicatorStyle({
+        left: rect.left - parent.left + rect.width * 0.1,
+        width: rect.width * 0.8,
+        opacity: 1,
+      });
+    } else {
+      setIndicatorStyle((s) => ({ ...s, opacity: 0 }));
+    }
+  }, [activeSection]);
+
+  // Cursor glow tracking
+  const handleNavMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!navRef.current) return;
+    const rect = navRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    setCursorX(x);
+  }, []);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setCmdOpen(true);
+      }
+      if (e.key === "Escape") {
+        setCmdOpen(false);
+        setNotifOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const userName = user?.user_metadata?.full_name?.split(" ")[0] || user?.user_metadata?.user_name || "Builder";
   const userRole = user?.user_metadata?.role || "Builder";
@@ -48,34 +108,75 @@ const Navbar = () => {
 
   const themeIcon = theme === "light" ? <Sun className="w-3.5 h-3.5" /> : theme === "dark" ? <Moon className="w-3.5 h-3.5" /> : <Monitor className="w-3.5 h-3.5" />;
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        setCmdOpen(true);
-      }
-      if (e.key === "Escape") {
-        setCmdOpen(false);
-        setNotifOpen(false);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  // Velocity-driven styling
+  const scrolled = scrollY > 40;
+  const compact = scrollY > 120;
+  const velAbs = Math.min(Math.abs(velocity), 20);
+  const blurAmount = 12 + velAbs * 0.8;
+  const borderOpacity = 0.1 + Math.min(velAbs * 0.01, 0.15);
+  const shadowOpacity = 0.5 + Math.min(velAbs * 0.02, 0.3);
+  const navScale = 1 - Math.min(velAbs * 0.004, 0.02);
+
+  const navVariants = {
+    hidden: { y: -80, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const } },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: (i: number) => ({
+      y: 0,
+      opacity: 1,
+      transition: { delay: 0.3 + i * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
+    }),
+  };
 
   return (
-    <header className="fixed top-4 left-1/2 -translate-x-1/2 w-[92%] max-w-6xl z-50 transition-all duration-300">
-      <nav className="px-6 py-3.5 rounded-full border border-white/10 bg-card/60 backdrop-blur-xl flex items-center justify-between shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+    <motion.header
+      variants={navVariants}
+      initial="hidden"
+      animate="visible"
+      className="fixed top-4 left-1/2 -translate-x-1/2 w-[92%] max-w-6xl z-50"
+      style={{ scale: navScale }}
+    >
+      <nav
+        ref={navRef}
+        onMouseMove={handleNavMouseMove}
+        className="glass-velocity hairline-border relative px-6 py-3.5 rounded-full flex items-center justify-between transition-all duration-300"
+        style={{
+          backdropFilter: `blur(${blurAmount}px)`,
+          WebkitBackdropFilter: `blur(${blurAmount}px)`,
+          boxShadow: `0 1px 0 0 hsl(0 0% 100% / 0.06) inset, 0 8px 32px rgba(0,0,0,${shadowOpacity})`,
+          borderColor: `hsl(var(--border) / ${borderOpacity})`,
+          paddingTop: compact ? 10 : 14,
+          paddingBottom: compact ? 10 : 14,
+        }}
+      >
+        {/* Cursor-follow glow */}
+        <div className="cursor-glow">
+          <div
+            className="absolute top-0 h-full pointer-events-none transition-opacity duration-300"
+            style={{
+              left: `${cursorX}%`,
+              width: "280px",
+              transform: "translateX(-50%)",
+              background: "radial-gradient(ellipse at center, hsl(var(--primary) / 0.12) 0%, transparent 70%)",
+              opacity: scrolled ? 0.6 : 0.3,
+            }}
+          />
+        </div>
+
         {/* Logo and Live Indicator */}
-        <div className="flex items-center gap-4">
-          <Link to="/" className="flex items-center gap-2">
+        <motion.div custom={0} variants={itemVariants} initial="hidden" animate="visible" className="relative z-10 flex items-center gap-4">
+          <Link to="/" className="flex items-center gap-2" data-cursor="Home">
             <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center glow-cyan">
               <Zap className="w-4 h-4 text-primary-foreground" />
             </div>
-            <span className="font-display font-black text-xl tracking-wider gradient-text-cyan">SHIPYARD</span>
+            <span className={`font-display font-black tracking-wider gradient-text-cyan transition-all duration-500 overflow-hidden ${compact ? "w-0 opacity-0" : "w-auto opacity-100 text-xl"}`}>
+              SHIPYARD
+            </span>
           </Link>
-          
-          {/* Live Online Badge */}
+
           <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent/10 border border-accent/20 text-[10px] font-bold text-accent uppercase tracking-wider">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
@@ -83,61 +184,81 @@ const Navbar = () => {
             </span>
             2,482 Live
           </div>
-        </div>
+        </motion.div>
 
         {/* Desktop Nav links */}
-        <div className="hidden md:flex items-center gap-1 text-sm font-semibold text-muted-foreground">
-          {[
-            { id: "builders", label: "Builders" },
-            { id: "projects", label: "Projects" },
-            { id: "hire", label: "Hire" },
-            { id: "discover", label: "Discover" },
-          ].map((link) => (
-            <a
-              key={link.label}
-              href={link.href || `#${link.id}`}
-              className={`relative px-3 py-2 transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:bg-primary after:rounded-full after:transition-all after:duration-300 ${
-                link.id && activeSection === link.id
-                  ? "text-primary text-glow-cyan after:w-4/5"
-                  : "text-muted-foreground hover:text-primary hover:text-glow-cyan after:w-0 hover:after:w-4/5"
+        <div className="hidden md:flex relative items-center gap-1 text-sm font-semibold text-muted-foreground z-10">
+          {NAV_LINKS.map((link, i) => (
+            <motion.a
+              key={link.id}
+              ref={(el) => { linkRefs.current[link.id] = el; }}
+              href={`#${link.id}`}
+              custom={i + 1}
+              variants={itemVariants}
+              initial="hidden"
+              animate="visible"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection(link.id);
+              }}
+              data-cursor={link.label}
+              className={`relative px-3 py-2 transition-colors duration-200 ${
+                activeSection === link.id
+                  ? "text-primary text-glow-cyan"
+                  : "text-muted-foreground hover:text-primary hover:text-glow-cyan"
               }`}
             >
               {link.label}
-            </a>
+            </motion.a>
           ))}
+          <div
+            className="liquid-indicator"
+            style={{ left: indicatorStyle.left, width: indicatorStyle.width, opacity: indicatorStyle.opacity }}
+          />
         </div>
 
         {/* CTA & Sign In */}
-        <div className="hidden md:flex items-center gap-2">
-          {/* Command Palette Trigger */}
-          <button
+        <div className="hidden md:flex relative z-10 items-center gap-2">
+          <motion.button
+            custom={5}
+            variants={itemVariants}
+            initial="hidden"
+            animate="visible"
             onClick={() => setCmdOpen(true)}
+            data-cursor="Search"
             className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-white/20 transition-all duration-200"
             title="Search (⌘K)"
           >
             <Search className="w-3.5 h-3.5" />
-          </button>
+          </motion.button>
 
-          {/* Theme Toggle */}
-          <button
+          <motion.button
+            custom={6}
+            variants={itemVariants}
+            initial="hidden"
+            animate="visible"
             onClick={cycleTheme}
+            data-cursor="Theme"
             className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-white/20 transition-all duration-200"
             title={`Theme: ${theme}`}
           >
             {themeIcon}
-          </button>
+          </motion.button>
 
-          {/* Notifications */}
           <div className="relative">
-            <button
+            <motion.button
+              custom={7}
+              variants={itemVariants}
+              initial="hidden"
+              animate="visible"
               onClick={() => setNotifOpen(!notifOpen)}
+              data-cursor="Alerts"
               className="relative w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-white/20 transition-all duration-200"
             >
               <Bell className="w-3.5 h-3.5" />
               <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-primary text-[7px] font-bold text-primary-foreground flex items-center justify-center">3</span>
-            </button>
+            </motion.button>
 
-            {/* Notifications Dropdown */}
             {notifOpen && (
               <div className="absolute right-0 mt-2 w-72 rounded-2xl border border-white/10 bg-card/95 backdrop-blur-2xl shadow-2xl py-3 animate-in fade-in zoom-in-95 duration-150 z-50">
                 <div className="px-4 pb-2 border-b border-white/10">
@@ -172,9 +293,10 @@ const Navbar = () => {
           {loading ? (
             <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           ) : user ? (
-            <div className="relative">
+            <motion.div custom={8} variants={itemVariants} initial="hidden" animate="visible" className="relative">
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
+                data-cursor="Account"
                 className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
               >
                 <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center">
@@ -189,12 +311,8 @@ const Navbar = () => {
                   )}
                 </div>
                 <div className="hidden sm:flex items-center gap-2">
-                  <span className="text-sm font-semibold text-foreground">
-                    {userName}
-                  </span>
-                  <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/20">
-                    {userRole}
-                  </span>
+                  <span className="text-sm font-semibold text-foreground">{userName}</span>
+                  <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/20">{userRole}</span>
                 </div>
               </button>
 
@@ -204,200 +322,153 @@ const Navbar = () => {
                     <p className="text-sm font-semibold text-foreground">{userName}</p>
                     <p className="text-[10px] font-mono text-primary">{`> ${userRole.toLowerCase()} --online`}</p>
                   </div>
-                  <Link
-                    to="/dashboard"
-                    onClick={() => setUserMenuOpen(false)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-primary/10">
-                    <LayoutDashboard className="w-4 h-4 text-primary" />
-                    Dashboard
+                  <Link to="/dashboard" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-primary/10">
+                    <LayoutDashboard className="w-4 h-4 text-primary" /> Dashboard
                   </Link>
-                  <Link
-                    to="/dashboard"
-                    onClick={() => setUserMenuOpen(false)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-primary/10">
-                    <FolderGit2 className="w-4 h-4 text-secondary" />
-                    My Ships
+                  <Link to="/dashboard" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-primary/10">
+                    <FolderGit2 className="w-4 h-4 text-secondary" /> My Ships
                   </Link>
-                  <Link
-                    to="/dashboard"
-                    onClick={() => setUserMenuOpen(false)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-primary/10">
-                    <User className="w-4 h-4 text-accent" />
-                    Profile
+                  <Link to="/dashboard" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-primary/10">
+                    <User className="w-4 h-4 text-accent" /> Profile
                   </Link>
                   <hr className="border-white/10 my-1" />
-                  <button
-                    onClick={handleSignOut}
-                    className="flex items-center gap-2 w-full px-4 py-2 text-sm text-destructive hover:bg-destructive/10">
-                    <LogOut className="w-4 h-4" />
-                    Sign Out
+                  <button onClick={handleSignOut} className="flex items-center gap-2 w-full px-4 py-2 text-sm text-destructive hover:bg-destructive/10">
+                    <LogOut className="w-4 h-4" /> Sign Out
                   </button>
                 </div>
               )}
-            </div>
+            </motion.div>
           ) : (
-            <>
-              <Link
-                to="/login"
-                className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
+            <motion.div custom={8} variants={itemVariants} initial="hidden" animate="visible" className="flex items-center gap-2">
+              <Link to="/login" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
                 Sign In
               </Link>
-              <Link
-                to="/login"
-                className="px-5 py-2.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-bold glow-cyan hover:opacity-95 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200">
-                Join as Builder
-              </Link>
-            </>
+              <MagneticButton strength={0.25} dataCursor="Join">
+                <Link
+                  to="/login"
+                  className="px-5 py-2.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-bold glow-cyan hover:opacity-95 active:scale-[0.98] transition-all duration-200"
+                >
+                  Join as Builder
+                </Link>
+              </MagneticButton>
+            </motion.div>
           )}
         </div>
 
         {/* Mobile menu trigger */}
-        <button 
-          className="md:hidden w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+        <motion.button
+          custom={9}
+          variants={itemVariants}
+          initial="hidden"
+          animate="visible"
+          className="md:hidden relative z-10 w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
           onClick={() => setOpen(!open)}
         >
           <Menu className="w-4 h-4" />
-        </button>
+        </motion.button>
       </nav>
 
       {/* Mobile Terminal Panel */}
-      <div
-        className={`fixed inset-0 z-[60] transition-all duration-300 md:hidden ${
-          open ? "pointer-events-auto" : "pointer-events-none"
-        }`}
-      >
-        <div
-          className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
-            open ? "opacity-100" : "opacity-0"
-          }`}
-          onClick={() => setOpen(false)}
-        />
-        <div
-          className={`absolute top-0 right-0 h-full w-[82vw] max-w-sm bg-card border-l border-white/10 shadow-2xl transition-transform duration-300 ease-out ${
-            open ? "translate-x-0" : "translate-x-full"
-          }`}
-        >
-          {/* Terminal title bar */}
-          <div className="flex items-center gap-2 px-4 py-3.5 border-b border-white/10 bg-[#111622]">
-            <div className="flex gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
-            </div>
-            <span className="text-[11px] font-mono text-muted-foreground ml-2.5">~/shipyard</span>
-            <button
-              onClick={() => setOpen(false)}
-              className="ml-auto p-1 text-muted-foreground hover:text-foreground transition-colors"
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[60] md:hidden"
+          >
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setOpen(false)} />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
+              className="absolute top-0 right-0 h-full w-[82vw] max-w-sm bg-card border-l border-white/10 shadow-2xl"
             >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          </div>
+              <div className="flex items-center gap-2 px-4 py-3.5 border-b border-white/10 bg-[#111622]">
+                <div className="flex gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
+                </div>
+                <span className="text-[11px] font-mono text-muted-foreground ml-2.5">~/shipyard</span>
+                <button onClick={() => setOpen(false)} className="ml-auto p-1 text-muted-foreground hover:text-foreground transition-colors">
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
 
-          {/* User info */}
-          {user && (
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5 bg-white/[0.02]">
-              <div className="w-9 h-9 rounded-full bg-gradient-primary flex items-center justify-center shrink-0">
-                {user.user_metadata?.avatar_url ? (
-                  <img
-                    src={user.user_metadata.avatar_url}
-                    alt={userName}
-                    className="w-9 h-9 rounded-full"
-                  />
+              {user && (
+                <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5 bg-white/[0.02]">
+                  <div className="w-9 h-9 rounded-full bg-gradient-primary flex items-center justify-center shrink-0">
+                    {user.user_metadata?.avatar_url ? (
+                      <img src={user.user_metadata.avatar_url} alt={userName} className="w-9 h-9 rounded-full" />
+                    ) : (
+                      <User className="w-4 h-4 text-primary-foreground" />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-sm font-semibold text-foreground truncate">{userName}</div>
+                    <div className="text-[10px] font-mono text-primary">{`> ${userRole.toLowerCase()} --online`}</div>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex flex-col py-3">
+                <div className="px-4 py-1.5 text-[10px] font-mono text-muted-foreground/50"># navigation</div>
+                {NAV_LINKS.map((link) => (
+                  <a
+                    key={link.id}
+                    href={`#${link.id}`}
+                    onClick={(e) => { e.preventDefault(); setOpen(false); scrollToSection(link.id); }}
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-colors group ml-7"
+                  >
+                    <span className="text-[10px] font-mono">#/</span>
+                    {link.label}
+                    <ChevronRight className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
+                  </a>
+                ))}
+
+                <div className="h-px bg-white/5 my-2 mx-4" />
+
+                <div className="px-4 py-1.5 text-[10px] font-mono text-muted-foreground/50"># user</div>
+                {user ? (
+                  <>
+                    <Link to="/dashboard" onClick={() => setOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-primary/5 transition-colors group">
+                      <span className="text-muted-foreground font-mono text-xs">{`>`}</span>
+                      <span className="flex-1">dashboard --open</span>
+                      <ChevronRight className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </Link>
+                    <button onClick={handleSignOut} className="flex items-center gap-3 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/5 transition-colors group">
+                      <span className="text-destructive/60 font-mono text-xs">{`>`}</span>
+                      <span className="flex-1">signout --force</span>
+                      <ChevronRight className="w-3 h-3 text-destructive/40 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </button>
+                  </>
                 ) : (
-                  <User className="w-4 h-4 text-primary-foreground" />
+                  <>
+                    <Link to="/login" onClick={() => setOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-primary/5 transition-colors group">
+                      <span className="text-muted-foreground font-mono text-xs">{`>`}</span>
+                      <span className="flex-1">auth --login</span>
+                      <ChevronRight className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </Link>
+                    <Link to="/login" onClick={() => setOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-primary/5 transition-colors group">
+                      <span className="text-primary font-mono text-xs">{`>`}</span>
+                      <span className="flex-1 text-primary">join --as builder</span>
+                      <ChevronRight className="w-3 h-3 text-primary/40 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </Link>
+                  </>
                 )}
               </div>
-              <div className="min-w-0">
-                <div className="text-sm font-semibold text-foreground truncate">{userName}</div>
-                <div className="text-[10px] font-mono text-primary">{`> ${userRole.toLowerCase()} --online`}</div>
+
+              <div className="absolute bottom-0 left-0 right-0 px-4 py-2.5 border-t border-white/5 bg-[#111622] flex items-center justify-between">
+                <span className="text-[10px] font-mono text-muted-foreground/50">{`[~] $`}</span>
+                <span className="text-[10px] font-mono text-muted-foreground/50">{theme} mode</span>
               </div>
-            </div>
-          )}
-
-          {/* Terminal navigation items */}
-          <div className="flex flex-col py-3">
-            <div className="px-4 py-1.5 text-[10px] font-mono text-muted-foreground/50"># navigation</div>
-            <button
-              onClick={() => { setOpen(false); document.getElementById("builders")?.scrollIntoView({ behavior: "smooth" }); }}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-primary/5 transition-colors group"
-            >
-              <span className="text-muted-foreground font-mono text-xs">{`>`}</span>
-              <span className="flex-1">cd builders</span>
-              <ChevronRight className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-            </button>
-            {[
-              { href: "#builders", label: "Builders" },
-              { href: "#projects", label: "Projects" },
-              { href: "#hire", label: "Hire" },
-              { href: "#discover", label: "Discover" },
-            ].map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-colors group ml-7"
-              >
-                <span className="text-[10px] font-mono">#/</span>
-                {link.label}
-              </a>
-            ))}
-
-            <div className="h-px bg-white/5 my-2 mx-4" />
-
-            <div className="px-4 py-1.5 text-[10px] font-mono text-muted-foreground/50"># user</div>
-            {user ? (
-              <>
-                <Link
-                  to="/dashboard"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-primary/5 transition-colors group"
-                >
-                  <span className="text-muted-foreground font-mono text-xs">{`>`}</span>
-                  <span className="flex-1">dashboard --open</span>
-                  <ChevronRight className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                </Link>
-                <button
-                  onClick={handleSignOut}
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/5 transition-colors group"
-                >
-                  <span className="text-destructive/60 font-mono text-xs">{`>`}</span>
-                  <span className="flex-1">signout --force</span>
-                  <ChevronRight className="w-3 h-3 text-destructive/40 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-primary/5 transition-colors group"
-                >
-                  <span className="text-muted-foreground font-mono text-xs">{`>`}</span>
-                  <span className="flex-1">auth --login</span>
-                  <ChevronRight className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                </Link>
-                <Link
-                  to="/login"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-primary/5 transition-colors group"
-                >
-                  <span className="text-primary font-mono text-xs">{`>`}</span>
-                  <span className="flex-1 text-primary">join --as builder</span>
-                  <ChevronRight className="w-3 h-3 text-primary/40 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </Link>
-              </>
-            )}
-          </div>
-
-          {/* Bottom status bar */}
-          <div className="absolute bottom-0 left-0 right-0 px-4 py-2.5 border-t border-white/5 bg-[#111622] flex items-center justify-between">
-            <span className="text-[10px] font-mono text-muted-foreground/50">{`[~] $`}</span>
-            <span className="text-[10px] font-mono text-muted-foreground/50">
-              {theme} mode
-            </span>
-          </div>
-        </div>
-      </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Command Palette Modal */}
       {cmdOpen && (
@@ -417,35 +488,32 @@ const Navbar = () => {
             <div className="py-2 max-h-64 overflow-y-auto">
               <div className="px-4 py-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Navigate</div>
               <button onClick={() => { setCmdOpen(false); navigate("/dashboard"); }} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 transition-colors">
-                <LayoutDashboard className="w-4 h-4 text-primary" />
-                <span>Dashboard</span>
+                <LayoutDashboard className="w-4 h-4 text-primary" /> Dashboard
               </button>
               <button onClick={() => { setCmdOpen(false); navigate("/dashboard"); }} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 transition-colors">
-                <User className="w-4 h-4 text-secondary" />
-                <span>Profile</span>
+                <User className="w-4 h-4 text-secondary" /> Profile
               </button>
               <button onClick={() => { setCmdOpen(false); navigate("/dashboard"); }} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 transition-colors">
-                <FolderGit2 className="w-4 h-4 text-accent" />
-                <span>My Ships</span>
+                <FolderGit2 className="w-4 h-4 text-accent" /> My Ships
               </button>
               <div className="px-4 py-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-1 border-t border-white/5">Pages</div>
               <button onClick={() => { setCmdOpen(false); navigate("/"); }} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 transition-colors">
-                <Zap className="w-4 h-4 text-primary" />
-                <span>Landing</span>
+                <Zap className="w-4 h-4 text-primary" /> Landing
               </button>
-              <button onClick={() => { setCmdOpen(false); window.location.href = "#builders"; }} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 transition-colors">
-                <Zap className="w-4 h-4 text-muted-foreground" />
-                <span>Builders</span>
-              </button>
-              <button onClick={() => { setCmdOpen(false); window.location.href = "#projects"; }} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 transition-colors">
-                <Zap className="w-4 h-4 text-muted-foreground" />
-                <span>Projects</span>
-              </button>
+              {NAV_LINKS.map((link) => (
+                <button
+                  key={link.id}
+                  onClick={() => { setCmdOpen(false); scrollToSection(link.id); }}
+                  className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 transition-colors"
+                >
+                  <Zap className="w-4 h-4 text-muted-foreground" /> {link.label}
+                </button>
+              ))}
             </div>
           </div>
         </div>
       )}
-    </header>
+    </motion.header>
   );
 };
 

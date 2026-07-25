@@ -2,6 +2,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import ScrollToTop from "@/components/ScrollToTop";
+import SmoothScroll from "@/components/SmoothScroll";
+import CustomCursor from "@/components/CustomCursor";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -71,14 +73,17 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <BrowserRouter>
-        <ScrollToTop />
-        <ThemeProvider>
-          <Toaster />
-          <Sonner />
-          <AuthProvider>
-            <AppRoutes />
-          </AuthProvider>
-        </ThemeProvider>
+        <SmoothScroll>
+          <ScrollToTop />
+          <CustomCursor />
+          <ThemeProvider>
+            <Toaster />
+            <Sonner />
+            <AuthProvider>
+              <AppRoutes />
+            </AuthProvider>
+          </ThemeProvider>
+        </SmoothScroll>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
