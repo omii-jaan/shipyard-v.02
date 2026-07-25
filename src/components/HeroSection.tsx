@@ -129,68 +129,62 @@ const HeroSection = () => {
         className="absolute inset-0 bg-cover bg-center opacity-[0.03]"
         style={{ backgroundImage: `url(${heroBg})` }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/30 to-background pointer-events-none" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full bg-[radial-gradient(circle_70%_55%_at_50%_-10%,hsl(187_72%_54%_/_0.05),transparent_55%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/20 to-background pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full bg-[radial-gradient(circle_80%_60%_at_50%_-10%,hsl(183_100%_50%_/_0.08),transparent_50%)] pointer-events-none" />
 
-      <div className="absolute top-1/3 left-0 w-72 h-72 bg-primary/[0.04] rounded-full blur-[120px]" />
+      <div className="absolute top-1/4 left-5 w-40 h-40 bg-primary/5 rounded-full blur-[80px]" />
+      <div className="absolute bottom-1/4 right-5 w-60 h-60 bg-secondary/5 rounded-full blur-[100px]" />
 
       <div className="relative z-10 container max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           
           {/* Left Column */}
           <div className="lg:col-span-6 flex flex-col items-start text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03] text-muted-foreground text-[11px] font-medium tracking-wide mb-7">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-              The global port for AI builders
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-bold uppercase tracking-wider mb-6 animate-pulse-glow">
+              <Sparkles className="w-3.5 h-3.5" />
+              The Next Gen Port for Vibe Coding
             </div>
 
-            <h1 className="font-display font-bold text-5xl sm:text-6xl lg:text-[4.5rem] leading-[1.02] tracking-[-0.02em] text-foreground mb-6 flex flex-wrap items-baseline gap-x-3 text-balance">
+            <h1 className="font-display font-black text-5xl sm:text-6xl lg:text-7xl leading-[1.05] tracking-tight text-white mb-6 flex flex-wrap items-baseline gap-x-3">
               Build.
               <WordRotate
                 words={["Dock.", "Deploy.", "Launch.", "Ship."]}
                 duration={3000}
-                className="text-primary font-bold"
+                className="gradient-text-cyan text-glow-cyan font-black"
                 motionProps={{
-                  initial: { opacity: 0, y: -28 },
+                  initial: { opacity: 0, y: -50 },
                   animate: { opacity: 1, y: 0 },
-                  exit: { opacity: 0, y: 28 },
-                  transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
+                  exit: { opacity: 0, y: 50 },
+                  transition: { duration: 0.25, ease: "easeOut" },
                 }}
               />
               Ship.
-              <span className="text-muted-foreground">Get paid.</span>
+              <span className="gradient-text-purple text-glow-purple">Get Paid.</span>
             </h1>
 
-            <p className="text-muted-foreground text-base md:text-lg max-w-xl mb-9 leading-relaxed text-pretty">
-              The global ecosystem where developer vibes become live products. Dock your
-              AI-assisted repositories, verify real performance, and match with founders
-              paying $10k+ for proven builders. No resumes — only code.
+            <p className="text-muted-foreground text-base md:text-lg max-w-xl mb-8 leading-relaxed">
+              Welcome to the global ecosystem where developer vibes become live products.
+              Dock your AI-assisted repositories, verify performance metrics, and match
+              with founders paying $10k+ for proven builders. No resumes. Only code.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mb-14">
-              <a
-                href="/projects"
-                className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors duration-200"
-              >
-                Browse projects
-                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-12">
+              <a href="/projects" className="group flex items-center justify-center gap-2.5 px-8 py-4 rounded-full bg-white/10 text-white text-sm font-semibold rounded-l-sm hover:bg-white/20 transition-all duration-200">
+                Browse Projects →
               </a>
-              <a
-                href="/#discover"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-white/12 bg-white/[0.02] text-foreground text-sm font-semibold hover:bg-white/[0.05] hover:border-white/20 transition-colors duration-200"
-              >
-                Hire vibe builders
+              <a href="/#discover" className="flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-white/10 bg-white/5 text-white font-bold text-base hover:bg-white/10 hover:border-white/20 transition-all duration-200">
+                Hire Vibe Builders
               </a>
             </div>
 
-            <div className="grid grid-cols-3 gap-8 pt-7 border-t border-white/[0.06] w-full">
-              {stats.map(({ label, value, suffix }) => (
+            <div className="grid grid-cols-3 gap-6 pt-6 border-t border-white/5 w-full">
+              {stats.map(({ label, value, suffix, icon: Icon }) => (
                 <div key={label} className="flex flex-col">
-                  <span className="font-display font-semibold text-2xl md:text-[1.75rem] text-foreground flex items-baseline gap-0.5 tracking-tight">
-                    <NumberTicker value={value} className="text-2xl md:text-[1.75rem] text-foreground" />
-                    <span className="text-primary">{suffix}</span>
+                  <span className="font-display font-black text-xl md:text-2xl gradient-text-cyan flex items-center gap-1.5">
+                    <NumberTicker value={value} className="text-xl md:text-2xl" />
+                    <span className="text-xl md:text-2xl">{suffix}</span>
                   </span>
-                  <span className="text-[11px] text-muted-foreground tracking-wide mt-1.5">{label}</span>
+                  <span className="text-[11px] text-muted-foreground font-semibold uppercase tracking-wider mt-1">{label}</span>
                 </div>
               ))}
             </div>

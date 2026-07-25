@@ -28,7 +28,7 @@ const CTASection = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           {/* Card 1: For Builders */}
-          <div className="relative rounded-3xl p-8 md:p-10 border border-primary/20 bg-gradient-to-br from-primary/5 via-card/80 to-card/40 group hover:shadow-[0_0_40px_hsl(187_72%_54%_/_0.1)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+          <div className="relative rounded-3xl p-8 md:p-10 border border-primary/20 bg-gradient-to-br from-primary/5 via-card/80 to-card/40 group hover:shadow-[0_0_30px_rgba(183,100,50,0.1)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
             {/* Visual background icon decoration */}
             <Terminal className="absolute -right-8 -bottom-8 w-44 h-44 text-primary/5 pointer-events-none group-hover:scale-110 transition-transform duration-500" />
             
@@ -71,7 +71,7 @@ const CTASection = () => {
           </div>
 
           {/* Card 2: For Founders */}
-          <div className="relative rounded-3xl p-8 md:p-10 border border-secondary/20 bg-gradient-to-br from-secondary/5 via-card/80 to-card/40 group hover:shadow-[0_0_40px_hsl(213_40%_62%_/_0.1)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+          <div className="relative rounded-3xl p-8 md:p-10 border border-secondary/20 bg-gradient-to-br from-secondary/5 via-card/80 to-card/40 group hover:shadow-[0_0_30px_rgba(168,85,247,0.1)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
             {/* Visual background icon decoration */}
             <Compass className="absolute -right-8 -bottom-8 w-44 h-44 text-secondary/5 pointer-events-none group-hover:scale-110 transition-transform duration-500" />
             
