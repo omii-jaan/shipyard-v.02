@@ -72,10 +72,10 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       backgroundImage: {
-        "gradient-primary": "linear-gradient(135deg, hsl(183 100% 50%), hsl(200 100% 60%))",
-        "gradient-secondary": "linear-gradient(135deg, hsl(270 60% 62%), hsl(290 70% 55%))",
-        "gradient-card": "linear-gradient(145deg, hsl(222 22% 9%), hsl(222 22% 7%))",
-        "gradient-shine": "linear-gradient(135deg, hsl(183 100% 50% / 0.08), hsl(270 60% 62% / 0.08))",
+        "gradient-primary": "linear-gradient(135deg, hsl(187 72% 60%), hsl(198 70% 66%))",
+        "gradient-secondary": "linear-gradient(135deg, hsl(213 45% 68%), hsl(200 40% 72%))",
+        "gradient-card": "linear-gradient(145deg, hsl(220 20% 8%), hsl(220 20% 6%))",
+        "gradient-shine": "linear-gradient(135deg, hsl(187 72% 54% / 0.08), hsl(213 40% 62% / 0.06))",
       },
       keyframes: {
         "accordion-down": {
