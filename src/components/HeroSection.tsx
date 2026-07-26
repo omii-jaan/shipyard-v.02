@@ -169,7 +169,7 @@ const HeroSection = () => {
               <br />
               <span className="inline-flex items-baseline gap-3">
                 <WordRotate
-                  words={["Dock.", "Deploy.", "Launch.", "Ship."]}
+                  words={["Deploy.", "Dock.", "Launch.", "Ship."]}
                   duration={3000}
                   className="gradient-text-cyan text-glow-cyan font-black"
                   motionProps={{
@@ -189,7 +189,7 @@ const HeroSection = () => {
             <p className="text-muted-foreground text-base md:text-lg max-w-xl mb-10 leading-[1.7] font-light">
               The global ecosystem where developer vibes become live products.
               Dock your AI-assisted repositories, verify performance metrics, and match
-              with founders paying <span className="text-foreground font-medium">$10k+</span> for proven builders. 
+              with founders paying <span className="text-foreground font-medium">$10k+</span> for proven builders.
               <span className="text-foreground/80 font-medium"> No resumes. Only code.</span>
             </p>
 

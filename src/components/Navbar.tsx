@@ -136,8 +136,8 @@ const Navbar = () => {
       variants={navVariants}
       initial="hidden"
       animate="visible"
-      className="fixed top-4 left-1/2 -translate-x-1/2 w-[92%] max-w-6xl z-50"
-      style={{ scale: navScale }}
+      className="fixed top-4 left-1/2 w-[92%] max-w-6xl z-50"
+      style={{ transform: `translateX(-50%) scale(${navScale})` }}
     >
       <nav
         ref={navRef}
