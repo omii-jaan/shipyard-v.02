@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import heroBg from "@/assets/hero-bg.jpg";
-import { ArrowRight, Sparkles, Users, Rocket, Terminal, RefreshCw, Send } from "lucide-react";
+import { ArrowRight, Sparkles, Users, Rocket, Terminal, RefreshCw, Send, Zap } from "lucide-react";
 import { NumberTicker } from "@/components/magicui/number-ticker";
 import { WordRotate } from "@/components/magicui/word-rotate";
 import { toast } from "@/hooks/use-toast";
@@ -124,145 +124,189 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28 pb-16 px-6 bg-canvas-dots">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-32 pb-20 px-6">
+      {/* Layered premium background */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-[0.03]"
+        className="absolute inset-0 bg-cover bg-center opacity-[0.025]"
         style={{ backgroundImage: `url(${heroBg})` }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/20 to-background pointer-events-none" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full bg-[radial-gradient(circle_80%_60%_at_50%_-10%,hsl(183_100%_50%_/_0.08),transparent_50%)] pointer-events-none" />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: "var(--gradient-hero)" }}
+      />
+      {/* Refined dot grid */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.4]"
+        style={{
+          backgroundImage: "radial-gradient(circle, hsl(186 100% 52% / 0.08) 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+          maskImage: "radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 80%)",
+          WebkitMaskImage: "radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 80%)",
+        }}
+      />
 
-      <div className="absolute top-1/4 left-5 w-40 h-40 bg-primary/5 rounded-full blur-[80px]" />
-      <div className="absolute bottom-1/4 right-5 w-60 h-60 bg-secondary/5 rounded-full blur-[100px]" />
+      {/* Ambient glow orbs — softer, more sophisticated */}
+      <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-0 w-[600px] h-[600px] bg-secondary/6 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="relative z-10 container max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-12 items-center">
           
-          {/* Left Column */}
+          {/* Left Column — Editorial layout */}
           <div className="lg:col-span-6 flex flex-col items-start text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-bold uppercase tracking-wider mb-6 animate-pulse-glow">
-              <Sparkles className="w-3.5 h-3.5" />
+            {/* Refined badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary/15 bg-primary/[0.03] text-primary text-[11px] font-semibold uppercase tracking-[0.18em] mb-8">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary" />
+              </span>
               The Next Gen Port for Vibe Coding
             </div>
 
-            <h1 className="font-display font-black text-5xl sm:text-6xl lg:text-7xl leading-[1.05] tracking-tight text-white mb-6 flex flex-wrap items-baseline gap-x-3">
+            {/* Editorial headline with serif accent */}
+            <h1 className="font-display font-black text-5xl sm:text-6xl lg:text-[5.5rem] leading-[0.95] tracking-[-0.03em] text-white mb-8">
               Build.
-              <WordRotate
-                words={["Dock.", "Deploy.", "Launch.", "Ship."]}
-                duration={3000}
-                className="gradient-text-cyan text-glow-cyan font-black"
-                motionProps={{
-                  initial: { opacity: 0, y: -50 },
-                  animate: { opacity: 1, y: 0 },
-                  exit: { opacity: 0, y: 50 },
-                  transition: { duration: 0.25, ease: "easeOut" },
-                }}
-              />
-              Ship.
-              <span className="gradient-text-purple text-glow-purple">Get Paid.</span>
+              <br />
+              <span className="inline-flex items-baseline gap-3">
+                <WordRotate
+                  words={["Dock.", "Deploy.", "Launch.", "Ship."]}
+                  duration={3000}
+                  className="gradient-text-cyan text-glow-cyan font-black"
+                  motionProps={{
+                    initial: { opacity: 0, y: -40 },
+                    animate: { opacity: 1, y: 0 },
+                    exit: { opacity: 0, y: 40 },
+                    transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] as const },
+                  }}
+                />
+              </span>
+              <span className="block">
+                Ship. <span className="font-serif-accent font-normal text-4xl sm:text-5xl lg:text-6xl gradient-text-purple text-glow-purple italic">Get paid.</span>
+              </span>
             </h1>
 
-            <p className="text-muted-foreground text-base md:text-lg max-w-xl mb-8 leading-relaxed">
-              Welcome to the global ecosystem where developer vibes become live products.
+            {/* Refined description */}
+            <p className="text-muted-foreground text-base md:text-lg max-w-xl mb-10 leading-[1.7] font-light">
+              The global ecosystem where developer vibes become live products.
               Dock your AI-assisted repositories, verify performance metrics, and match
-              with founders paying $10k+ for proven builders. No resumes. Only code.
+              with founders paying <span className="text-foreground font-medium">$10k+</span> for proven builders. 
+              <span className="text-foreground/80 font-medium"> No resumes. Only code.</span>
             </p>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-12">
-              <a href="/projects" className="group flex items-center justify-center gap-2.5 px-8 py-4 rounded-full bg-white/10 text-white text-sm font-semibold rounded-l-sm hover:bg-white/20 transition-all duration-200">
-                Browse Projects →
-              </a>
-              <a href="/#discover" className="flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-white/10 bg-white/5 text-white font-bold text-base hover:bg-white/10 hover:border-white/20 transition-all duration-200">
+            {/* Premium CTAs */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mb-14">
+              <Link
+                to="/projects"
+                className="group relative flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-foreground text-background text-sm font-semibold overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <span className="relative z-10">Browse Projects</span>
+                <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                to="/#discover"
+                className="group flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-border/60 bg-card/40 backdrop-blur-sm text-foreground font-medium text-sm hover:bg-card/60 hover:border-primary/20 transition-all duration-300"
+              >
                 Hire Vibe Builders
-              </a>
+                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+              </Link>
             </div>
 
-            <div className="grid grid-cols-3 gap-6 pt-6 border-t border-white/5 w-full">
+            {/* Refined stats — editorial style */}
+            <div className="grid grid-cols-3 gap-8 pt-8 border-t border-border/40 w-full">
               {stats.map(({ label, value, suffix, icon: Icon }) => (
-                <div key={label} className="flex flex-col">
-                  <span className="font-display font-black text-xl md:text-2xl gradient-text-cyan flex items-center gap-1.5">
-                    <NumberTicker value={value} className="text-xl md:text-2xl" />
-                    <span className="text-xl md:text-2xl">{suffix}</span>
-                  </span>
-                  <span className="text-[11px] text-muted-foreground font-semibold uppercase tracking-wider mt-1">{label}</span>
+                <div key={label} className="flex flex-col gap-1">
+                  <Icon className="w-3.5 h-3.5 text-primary/60 mb-2" />
+                  <div className="flex items-baseline gap-0.5">
+                    <NumberTicker value={value} className="font-display font-black text-2xl md:text-3xl text-foreground tracking-tight" />
+                    <span className="font-display font-black text-2xl md:text-3xl gradient-text-cyan">{suffix}</span>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground/70 font-medium uppercase tracking-[0.12em] leading-tight">{label}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Right Column: Interactive Terminal */}
+          {/* Right Column — Premium Terminal */}
           <div className="lg:col-span-6 w-full flex flex-col">
-            <div className="relative w-full rounded-2xl border border-white/15 bg-card/40 backdrop-blur-2xl shadow-2xl overflow-hidden">
+            <div className="relative w-full rounded-2xl glass-premium shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] overflow-hidden">
+              {/* Subtle top highlight */}
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
               
               {/* Terminal Header */}
-              <div className="flex items-center justify-between px-4 py-3 bg-white/[0.02] border-b border-white/10">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-full bg-[#ff5f56]" />
-                  <span className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-                  <span className="w-3 h-3 rounded-full bg-[#27c93f]" />
+              <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/40">
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full bg-[#ff5f56]/80" />
+                  <span className="w-3 h-3 rounded-full bg-[#ffbd2e]/80" />
+                  <span className="w-3 h-3 rounded-full bg-[#27c93f]/80" />
                 </div>
-                <span className="text-[10px] font-mono text-muted-foreground">~/sandbox — bash</span>
-                <div className="flex items-center gap-1 text-[10px] text-muted-foreground font-semibold uppercase tracking-widest">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                <span className="text-[10px] font-mono-accent text-muted-foreground/80">~/sandbox — bash</span>
+                <div className="flex items-center gap-1.5 text-[10px] text-accent font-medium uppercase tracking-widest">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-60" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent" />
+                  </span>
                   Live
                 </div>
               </div>
 
-              {/* Preset Tabs */}
-              <div className="flex border-b border-white/15 bg-white/[0.01]">
+              {/* Preset Tabs — refined */}
+              <div className="flex border-b border-border/40">
                 {PRESETS.map((preset) => (
                   <button
                     key={preset.id}
                     onClick={() => { setActivePreset(preset); runSimulation(preset.prompt); }}
-                    className={`flex-1 py-2 text-[11px] font-bold tracking-wider border-r border-white/15 last:border-r-0 transition-colors ${
+                    className={`flex-1 py-2.5 text-[11px] font-medium tracking-wide border-r border-border/40 last:border-r-0 transition-all relative ${
                       activePreset.id === preset.id
-                        ? "bg-primary/10 text-primary border-b border-b-primary"
-                        : "text-muted-foreground hover:text-white hover:bg-white/[0.02]"
+                        ? "text-primary bg-primary/[0.04]"
+                        : "text-muted-foreground/70 hover:text-foreground hover:bg-white/[0.02]"
                     }`}
                   >
                     {preset.label}
+                    {activePreset.id === preset.id && (
+                      <span className="absolute bottom-0 left-1/4 right-1/4 h-px bg-primary" />
+                    )}
                   </button>
                 ))}
               </div>
 
               {/* Terminal Body */}
-              <div className="p-4 min-h-[240px] bg-black/30 font-mono text-[11px] flex flex-col">
-                {/* Prompt display */}
-                <div className="flex items-start gap-1.5 mb-3">
+              <div className="p-5 min-h-[260px] bg-black/20 font-mono-accent text-[11px] flex flex-col">
+                {/* Prompt display — refined */}
+                <div className="flex items-start gap-2 mb-4">
                   <Terminal className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
-                  <div>
-                    <span className="text-[9px] text-white/40 block font-semibold uppercase tracking-wider mb-0.5 font-sans">Prompt:</span>
+                  <div className="flex-1">
+                    <span className="text-[9px] text-muted-foreground/50 block font-medium uppercase tracking-[0.15em] mb-1 font-sans">Prompt</span>
                     {state === "running" && visibleLogs.length === 0 ? (
-                      <span className="border-r-2 border-primary animate-pulse text-primary">{promptText}</span>
+                      <span className="border-r-2 border-primary animate-pulse text-primary/90">{promptText}</span>
                     ) : (
-                      <span className="text-primary">{promptText}</span>
+                      <span className="text-primary/90">{promptText}</span>
                     )}
                   </div>
                 </div>
 
-                {/* Logs */}
-                <div ref={logContainerRef} className="flex-1 space-y-1 max-h-[160px] overflow-y-auto">
+                {/* Logs — refined typography */}
+                <div ref={logContainerRef} className="flex-1 space-y-1.5 max-h-[180px] overflow-y-auto pr-1">
                   {visibleLogs.map((log, i) => (
-                    <div key={i} className="flex gap-2 items-start">
-                      <span className="text-white/20 shrink-0 w-4 text-right select-none">{i + 1}</span>
-                      <span className={log?.includes?.("Vite") || log?.includes?.("http://localhost") ? "text-accent font-bold" : "text-white/70"}>
+                    <div key={i} className="flex gap-2.5 items-start animate-in fade-in slide-in-from-left-1 duration-200">
+                      <span className="text-muted-foreground/30 shrink-0 w-5 text-right select-none tabular-nums">{i + 1}</span>
+                      <span className={log?.includes?.("Vite") || log?.includes?.("http://localhost") ? "text-accent font-medium" : "text-foreground/60"}>
                         {log}
                       </span>
                     </div>
                   ))}
                   {state === "running" && visibleLogs.length > 0 && (
-                    <div className="flex gap-1 items-center pl-6">
-                      <span className="w-1.5 h-1.5 rounded-full bg-white/40 animate-bounce [animation-delay:0.1s]" />
-                      <span className="w-1.5 h-1.5 rounded-full bg-white/40 animate-bounce [animation-delay:0.2s]" />
-                      <span className="w-1.5 h-1.5 rounded-full bg-white/40 animate-bounce [animation-delay:0.3s]" />
+                    <div className="flex gap-1 items-center pl-7 pt-1">
+                      <span className="w-1 h-1 rounded-full bg-primary/60 animate-bounce [animation-delay:0.1s]" />
+                      <span className="w-1 h-1 rounded-full bg-primary/60 animate-bounce [animation-delay:0.2s]" />
+                      <span className="w-1 h-1 rounded-full bg-primary/60 animate-bounce [animation-delay:0.3s]" />
                     </div>
                   )}
                   <div ref={logEndRef} />
                 </div>
 
-                {/* Input area */}
-                <form onSubmit={handleSubmit} className="mt-3 pt-3 border-t border-white/10 flex gap-2">
-                  <span className="text-primary text-xs mt-2 shrink-0">
+                {/* Input area — refined */}
+                <form onSubmit={handleSubmit} className="mt-4 pt-4 border-t border-border/30 flex gap-2 items-center">
+                  <span className="text-primary/70 text-xs shrink-0 font-mono-accent">
                     {`$`}
                   </span>
                   <input
@@ -272,12 +316,12 @@ const HeroSection = () => {
                     onChange={(e) => setCustomPrompt(e.target.value)}
                     placeholder="Type any build prompt..."
                     disabled={state === "running"}
-                    className="flex-1 bg-transparent border-none outline-none text-xs text-foreground placeholder:text-muted-foreground/40 font-mono disabled:opacity-50"
+                    className="flex-1 bg-transparent border-none outline-none text-xs text-foreground placeholder:text-muted-foreground/40 font-mono-accent disabled:opacity-50"
                   />
                   <button
                     type="submit"
                     disabled={state === "running" || !customPrompt.trim()}
-                    className="px-2.5 py-1.5 rounded-lg bg-primary/20 border border-primary/30 text-primary font-bold text-[10px] hover:bg-primary/30 transition-all disabled:opacity-30 flex items-center gap-1"
+                    className="px-3 py-1.5 rounded-lg bg-primary/15 border border-primary/20 text-primary font-medium text-[10px] hover:bg-primary/25 hover:border-primary/30 transition-all disabled:opacity-30 flex items-center gap-1.5"
                   >
                     <Send className="w-3 h-3" />
                     Run
@@ -285,7 +329,7 @@ const HeroSection = () => {
                   <button
                     type="button"
                     onClick={() => runSimulation(activePreset.prompt)}
-                    className="px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-muted-foreground hover:text-foreground transition-all text-[10px]"
+                    className="p-1.5 rounded-lg bg-white/[0.03] border border-border/40 text-muted-foreground hover:text-foreground hover:bg-white/[0.06] transition-all"
                     title="Reset"
                   >
                     <RefreshCw className={`w-3 h-3 ${state === "running" ? "animate-spin" : ""}`} />
@@ -293,12 +337,19 @@ const HeroSection = () => {
                 </form>
               </div>
             </div>
+
+            {/* Floating accent below terminal */}
+            <div className="mt-4 flex items-center justify-center gap-2 text-[10px] font-mono-accent text-muted-foreground/40 uppercase tracking-[0.2em]">
+              <Zap className="w-3 h-3 text-primary/40" />
+              <span>Live sandbox — powered by vibe coding</span>
+            </div>
           </div>
           
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+      {/* Bottom fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none" />
     </section>
   );
 };
