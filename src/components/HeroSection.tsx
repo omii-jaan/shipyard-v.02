@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import heroBg from "@/assets/hero-bg.jpg";
-import { ArrowRight, Sparkles, Users, Rocket, Terminal, RefreshCw, Send, Zap } from "lucide-react";
+import { ArrowRight, Sparkles, Users, Rocket, Terminal, RefreshCw, Send } from "lucide-react";
 import { NumberTicker } from "@/components/magicui/number-ticker";
 import { WordRotate } from "@/components/magicui/word-rotate";
 import { toast } from "@/hooks/use-toast";
@@ -125,37 +125,37 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-32 pb-20 px-6">
-      {/* Layered premium background */}
+      {/* Background image with overlay */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-[0.025]"
+        className="absolute inset-0 bg-cover bg-center opacity-[0.05]"
         style={{ backgroundImage: `url(${heroBg})` }}
       />
       <div
         className="absolute inset-0 pointer-events-none"
         style={{ background: "var(--gradient-hero)" }}
       />
-      {/* Refined dot grid */}
+      {/* Dot grid pattern */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-[0.4]"
+        className="absolute inset-0 pointer-events-none opacity-[0.3]"
         style={{
-          backgroundImage: "radial-gradient(circle, hsl(186 100% 52% / 0.08) 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(circle, hsl(183 100% 50% / 0.1) 1px, transparent 1px)",
           backgroundSize: "32px 32px",
           maskImage: "radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 80%)",
           WebkitMaskImage: "radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 80%)",
         }}
       />
 
-      {/* Ambient glow orbs — softer, more sophisticated */}
-      <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-0 w-[600px] h-[600px] bg-secondary/6 rounded-full blur-[140px] pointer-events-none" />
+      {/* Ambient glow orbs */}
+      <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-0 w-[600px] h-[600px] bg-secondary/10 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="relative z-10 container max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-12 items-center">
           
-          {/* Left Column — Editorial layout */}
+          {/* Left Column */}
           <div className="lg:col-span-6 flex flex-col items-start text-left">
-            {/* Refined badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary/15 bg-primary/[0.03] text-primary text-[11px] font-semibold uppercase tracking-[0.18em] mb-8">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-semibold uppercase tracking-wider mb-8">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary" />
@@ -163,8 +163,8 @@ const HeroSection = () => {
               The Next Gen Port for Vibe Coding
             </div>
 
-            {/* Editorial headline with serif accent */}
-            <h1 className="font-display font-black text-5xl sm:text-6xl lg:text-[5.5rem] leading-[0.95] tracking-[-0.03em] text-white mb-8">
+            {/* Headline */}
+            <h1 className="font-display font-black text-5xl sm:text-6xl lg:text-7xl leading-[0.95] tracking-tight text-white mb-8">
               Build.
               <br />
               <span className="inline-flex items-baseline gap-3">
@@ -181,19 +181,19 @@ const HeroSection = () => {
                 />
               </span>
               <span className="block">
-                Ship. <span className="font-serif-accent font-normal text-4xl sm:text-5xl lg:text-6xl gradient-text-purple text-glow-purple italic">Get paid.</span>
+                Ship. <span className="gradient-text-purple text-glow-purple">Get paid.</span>
               </span>
             </h1>
 
-            {/* Refined description */}
-            <p className="text-muted-foreground text-base md:text-lg max-w-xl mb-10 leading-[1.7] font-light">
+            {/* Description */}
+            <p className="text-muted-foreground text-base md:text-lg max-w-xl mb-10 leading-relaxed">
               The global ecosystem where developer vibes become live products.
               Dock your AI-assisted repositories, verify performance metrics, and match
               with founders paying <span className="text-foreground font-medium">$10k+</span> for proven builders.
-              <span className="text-foreground/80 font-medium"> No resumes. Only code.</span>
+              <span className="text-foreground font-medium"> No resumes. Only code.</span>
             </p>
 
-            {/* Premium CTAs */}
+            {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mb-14">
               <Link
                 to="/projects"
@@ -211,27 +211,24 @@ const HeroSection = () => {
               </Link>
             </div>
 
-            {/* Refined stats — editorial style */}
+            {/* Stats */}
             <div className="grid grid-cols-3 gap-8 pt-8 border-t border-border/40 w-full">
               {stats.map(({ label, value, suffix, icon: Icon }) => (
                 <div key={label} className="flex flex-col gap-1">
-                  <Icon className="w-3.5 h-3.5 text-primary/60 mb-2" />
+                  <Icon className="w-4 h-4 text-primary/60 mb-2" />
                   <div className="flex items-baseline gap-0.5">
-                    <NumberTicker value={value} className="font-display font-black text-2xl md:text-3xl text-foreground tracking-tight" />
+                    <NumberTicker value={value} className="font-display font-black text-2xl md:text-3xl text-foreground" />
                     <span className="font-display font-black text-2xl md:text-3xl gradient-text-cyan">{suffix}</span>
                   </div>
-                  <span className="text-[10px] text-muted-foreground/70 font-medium uppercase tracking-[0.12em] leading-tight">{label}</span>
+                  <span className="text-xs text-muted-foreground font-medium">{label}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Right Column — Premium Terminal */}
+          {/* Right Column — Terminal */}
           <div className="lg:col-span-6 w-full flex flex-col">
-            <div className="relative w-full rounded-2xl glass-premium shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] overflow-hidden">
-              {/* Subtle top highlight */}
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-              
+            <div className="relative w-full rounded-2xl card-shine shadow-2xl overflow-hidden">
               {/* Terminal Header */}
               <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/40">
                 <div className="flex items-center gap-2">
@@ -239,8 +236,8 @@ const HeroSection = () => {
                   <span className="w-3 h-3 rounded-full bg-[#ffbd2e]/80" />
                   <span className="w-3 h-3 rounded-full bg-[#27c93f]/80" />
                 </div>
-                <span className="text-[10px] font-mono-accent text-muted-foreground/80">~/sandbox — bash</span>
-                <div className="flex items-center gap-1.5 text-[10px] text-accent font-medium uppercase tracking-widest">
+                <span className="text-xs text-muted-foreground/80 font-mono">~/sandbox — bash</span>
+                <div className="flex items-center gap-1.5 text-xs text-accent font-medium uppercase tracking-widest">
                   <span className="relative flex h-1.5 w-1.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-60" />
                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent" />
@@ -249,15 +246,15 @@ const HeroSection = () => {
                 </div>
               </div>
 
-              {/* Preset Tabs — refined */}
+              {/* Preset Tabs */}
               <div className="flex border-b border-border/40">
                 {PRESETS.map((preset) => (
                   <button
                     key={preset.id}
                     onClick={() => { setActivePreset(preset); runSimulation(preset.prompt); }}
-                    className={`flex-1 py-2.5 text-[11px] font-medium tracking-wide border-r border-border/40 last:border-r-0 transition-all relative ${
+                    className={`flex-1 py-2.5 text-xs font-medium tracking-wide border-r border-border/40 last:border-r-0 transition-all relative ${
                       activePreset.id === preset.id
-                        ? "text-primary bg-primary/[0.04]"
+                        ? "text-primary bg-primary/5"
                         : "text-muted-foreground/70 hover:text-foreground hover:bg-white/[0.02]"
                     }`}
                   >
@@ -270,12 +267,12 @@ const HeroSection = () => {
               </div>
 
               {/* Terminal Body */}
-              <div className="p-5 min-h-[260px] bg-black/20 font-mono-accent text-[11px] flex flex-col">
-                {/* Prompt display — refined */}
+              <div className="p-5 min-h-[260px] bg-black/20 font-mono text-xs flex flex-col">
+                {/* Prompt display */}
                 <div className="flex items-start gap-2 mb-4">
                   <Terminal className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
                   <div className="flex-1">
-                    <span className="text-[9px] text-muted-foreground/50 block font-medium uppercase tracking-[0.15em] mb-1 font-sans">Prompt</span>
+                    <span className="text-[10px] text-muted-foreground/50 block font-medium uppercase tracking-wider mb-1 font-sans">Prompt</span>
                     {state === "running" && visibleLogs.length === 0 ? (
                       <span className="border-r-2 border-primary animate-pulse text-primary/90">{promptText}</span>
                     ) : (
@@ -284,7 +281,7 @@ const HeroSection = () => {
                   </div>
                 </div>
 
-                {/* Logs — refined typography */}
+                {/* Logs */}
                 <div ref={logContainerRef} className="flex-1 space-y-1.5 max-h-[180px] overflow-y-auto pr-1">
                   {visibleLogs.map((log, i) => (
                     <div key={i} className="flex gap-2.5 items-start animate-in fade-in slide-in-from-left-1 duration-200">
@@ -304,9 +301,9 @@ const HeroSection = () => {
                   <div ref={logEndRef} />
                 </div>
 
-                {/* Input area — refined */}
+                {/* Input area */}
                 <form onSubmit={handleSubmit} className="mt-4 pt-4 border-t border-border/30 flex gap-2 items-center">
-                  <span className="text-primary/70 text-xs shrink-0 font-mono-accent">
+                  <span className="text-primary/70 text-xs shrink-0 font-mono">
                     {`$`}
                   </span>
                   <input
@@ -316,12 +313,12 @@ const HeroSection = () => {
                     onChange={(e) => setCustomPrompt(e.target.value)}
                     placeholder="Type any build prompt..."
                     disabled={state === "running"}
-                    className="flex-1 bg-transparent border-none outline-none text-xs text-foreground placeholder:text-muted-foreground/40 font-mono-accent disabled:opacity-50"
+                    className="flex-1 bg-transparent border-none outline-none text-xs text-foreground placeholder:text-muted-foreground/40 font-mono disabled:opacity-50"
                   />
                   <button
                     type="submit"
                     disabled={state === "running" || !customPrompt.trim()}
-                    className="px-3 py-1.5 rounded-lg bg-primary/15 border border-primary/20 text-primary font-medium text-[10px] hover:bg-primary/25 hover:border-primary/30 transition-all disabled:opacity-30 flex items-center gap-1.5"
+                    className="px-3 py-1.5 rounded-lg bg-primary/15 border border-primary/20 text-primary font-medium text-xs hover:bg-primary/25 hover:border-primary/30 transition-all disabled:opacity-30 flex items-center gap-1.5"
                   >
                     <Send className="w-3 h-3" />
                     Run
@@ -339,8 +336,7 @@ const HeroSection = () => {
             </div>
 
             {/* Floating accent below terminal */}
-            <div className="mt-4 flex items-center justify-center gap-2 text-[10px] font-mono-accent text-muted-foreground/40 uppercase tracking-[0.2em]">
-              <Zap className="w-3 h-3 text-primary/40" />
+            <div className="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground/40 uppercase tracking-widest font-mono">
               <span>Live sandbox — powered by vibe coding</span>
             </div>
           </div>
